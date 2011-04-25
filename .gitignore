@@ -55,6 +55,7 @@ liboath/gtk-doc/liboath.types
 liboath/gtk-doc/pdf-build.stamp
 liboath/gtk-doc/pdf.stamp
 liboath/gtk-doc/scan-build.stamp
+liboath/gtk-doc/setup-build.stamp
 liboath/gtk-doc/sgml-build.stamp
 liboath/gtk-doc/sgml.stamp
 liboath/gtk-doc/tmpl-build.stamp
@@ -78,6 +79,8 @@ liboath/lib/dirname-lgpl.lo
 liboath/lib/dirname-lgpl.o
 liboath/lib/dummy.lo
 liboath/lib/dummy.o
+liboath/lib/fd-hook.lo
+liboath/lib/fd-hook.o
 liboath/lib/gc-gnulib.lo
 liboath/lib/gc-gnulib.o
 liboath/lib/hmac-sha1.lo
@@ -116,12 +119,14 @@ liboath/tests/tst_basic
 liboath/tests/tst_basic.o
 liboath/tests/tst_hotp_algo
 liboath/tests/tst_hotp_algo.o
-liboath/tests/tst_hotp_usersfile
-liboath/tests/tst_hotp_usersfile.o
 liboath/tests/tst_hotp_validate
 liboath/tests/tst_hotp_validate.o
 liboath/tests/tst_totp_algo
 liboath/tests/tst_totp_algo.o
+liboath/tests/tst_totp_validate
+liboath/tests/tst_totp_validate.o
+liboath/tests/tst_usersfile
+liboath/tests/tst_usersfile.o
 liboath/totp.lo
 liboath/totp.o
 liboath/usersfile.lo
@@ -232,4 +237,6 @@ pam_oath/tests/.deps/
 pam_oath/tests/Makefile
 pam_oath/tests/Makefile.in
 pam_oath/tests/test-pam_oath
+pam_oath/tests/test-pam_oath-root
+pam_oath/tests/test-pam_oath-root.o
 pam_oath/tests/test-pam_oath.o
