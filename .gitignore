@@ -247,6 +247,7 @@ liboath/man/oath_ocrasuite_get_cryptofunction_digits.3
 liboath/man/oath_ocrasuite_get_cryptofunction_hash.3
 liboath/man/oath_ocrasuite_get_password_hash.3
 liboath/man/oath_ocrasuite_get_session_length.3
+liboath/man/oath_ocrasuite_get_time_step.3
 liboath/man/oath_ocrasuite_parse.3
 liboath/man/oath_retrieve_mode.3
 liboath/man/oath_strerror.3
