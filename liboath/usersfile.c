@@ -91,8 +91,7 @@ static const char *whitespace = " \t\r\n";
  * @usersfile: Path to the credential storage file.
  * @username: User for which mode shall be retrieved.
  * @algorithm: Output parameter to store OATH algorithm.
- * @ocra_suite: Output parameter to store OCRA suite, NULL for non-OCRA
- * algorithms.
+ * @ocra_suite: Output parameter to store OCRA suite, NULL for non-OCRA.
  *
  * Used by the PAM module to retrieve the algorithm of the user that tries to
  * login.
@@ -287,21 +286,23 @@ parse_usersfile (const char *username,
 	  {
 	    oath_ocrasuite_t *os;
 	    oath_ocra_challenge_t challenge_type;
+
 	    rc = oath_ocrasuite_parse (ocra_suite, &os);
 	    if (rc != OATH_OK)
 	      rc = 1;
 	    else
 	      {
 		challenge_type = oath_ocrasuite_get_challenge_type (os);
-		rc = oath_ocra_validate2 (secret, secret_length,
-					  ocra_suite,
-					  start_moving_factor,
-					  1,
-					  &challenge_type,
-					  &challenge, NULL, NULL, time (NULL),
-					  otp);
+		rc = oath_ocra_validate (secret, secret_length,
+					 os,
+					 start_moving_factor,
+					 1,
+					 &challenge_type,
+					 &challenge, NULL, NULL, time (NULL),
+					 otp);
 		if (rc == OATH_OK)
 		  rc = 1;
+		oath_ocrasuite_done (os);
 	      }
 	  }
 	default:

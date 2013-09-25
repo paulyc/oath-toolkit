@@ -1,6 +1,7 @@
 /*
  * tst_ocra_algo.c - self-tests for liboath OCRA algorithm functions
  * Copyright (C) 2013 Fabian Grünbichler
+ * Copyright (C) 2013 Simon Josefsson
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -78,10 +79,10 @@ const struct
   char *secret;
   char *ocra_suite;
   uint64_t counter;
-  char *challenge_strings[2];
+  const char *challenge_strings[2];
   size_t number_of_challenges;
-  oath_ocra_hash_t challenge_types[2];
-  char *challenges_binary;
+  const oath_ocra_challenge_t challenge_types[2];
+  char challenges_binary[128];
   size_t challenges_binary_length;
   char *session;
   time_t now;
@@ -513,24 +514,28 @@ main (void)
     {
       char output_ocra1[strlen (tv[i].ocra) + 1];
       char output_ocra2[strlen (tv[i].ocra) + 1];
-      /*  size_t bin_length = 0;
-         rc = oath_hex2bin (tv[i].challenges_hex, NULL, &bin_length);
-         char challenges_bin[bin_length];
-         rc = oath_hex2bin (tv[i].challenges_hex, challenges_bin, &bin_length); */
-      rc =
-	oath_ocra_generate (tv[i].secret, strlen (tv[i].secret),
-			    tv[i].ocra_suite, tv[i].counter,
-			    tv[i].challenges_binary,
-			    tv[i].challenges_binary_length, pHash,
-			    tv[i].session, tv[i].now, output_ocra1);
-      rc2 =
-	oath_ocra_generate2 (tv[i].secret, strlen (tv[i].secret),
-			     tv[i].ocra_suite, tv[i].counter,
-			     tv[i].number_of_challenges,
-			     &(tv[i].challenge_types),
-			     tv[i].challenge_strings, pHash, tv[i].session,
-			     tv[i].now, output_ocra2);
+      oath_ocrasuite_t *osh;
 
+      rc = oath_ocrasuite_parse (tv[i].ocra_suite, &osh);
+      if (rc != OATH_OK)
+	{
+	  printf ("oath_ocrasuite_parse[%d] error %d for %s\n",
+		  i, rc, tv[i].ocra_suite);
+	  return 1;
+	}
+
+      rc = oath_ocra_generate_raw (tv[i].secret, strlen (tv[i].secret),
+				   osh, tv[i].counter,
+				   tv[i].challenges_binary,
+				   pHash,
+				   tv[i].session, tv[i].now, output_ocra1);
+      rc2 = oath_ocra_generate (tv[i].secret, strlen (tv[i].secret),
+				osh, tv[i].counter,
+				tv[i].number_of_challenges,
+				tv[i].challenge_types,
+				tv[i].challenge_strings, pHash, tv[i].session,
+				tv[i].now, output_ocra2);
+      oath_ocrasuite_done (osh);
       if (rc != OATH_OK && rc2 != OATH_OK)
 	{
 	  printf ("oath_ocra_generate at %d: %d\n", i, rc);

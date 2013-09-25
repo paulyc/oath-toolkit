@@ -92,7 +92,8 @@ extern "C"
  * @OATH_FILE_SYNC_ERROR: System error when syncing file to disk
  * @OATH_FILE_CLOSE_ERROR: System error when closing file
  * @OATH_SUITE_PARSE_ERROR: Error while parsing OCRA suite string
- * @OATH_SUITE_MISMATCH_ERROR: Mismatch between OCRA suite parameters and data input
+ * @OATH_SUITE_MISMATCH_ERROR: Mismatch between OCRA suite and inputs
+ * @OATH_INVALID_OCRA_CHALLENGE: Error with OCRA challenge
  * @OATH_LAST_ERROR: Meta-error indicating the last error code, for use
  *   when iterating over all error codes or similar.
  *
@@ -133,9 +134,10 @@ typedef enum
   OATH_FILE_CLOSE_ERROR = -25,
   OATH_SUITE_PARSE_ERROR = -26,
   OATH_SUITE_MISMATCH_ERROR = -27,
+  OATH_INVALID_OCRA_CHALLENGE = -28,
   /* When adding anything here, update OATH_LAST_ERROR, errors.c
      and tests/tst_errors.c. */
-  OATH_LAST_ERROR = -27
+  OATH_LAST_ERROR = -28
 } oath_rc;
 
 /* Global */
@@ -405,11 +407,22 @@ typedef enum
   OATH_OCRA_CHALLENGE_HEX = 2
 } oath_ocra_challenge_t;
 
+/**
+ * OATH_OCRASUITE_MAXLEN
+ *
+ * Length of longest possible OCRASuite string that is compliant
+ * with RFC 6287.  Currently it is of the form
+ * "OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M" which is 47
+ * characters not including the terminating NUL.
+ */
+#define OATH_OCRASUITE_MAXLEN \
+  sizeof("OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M")
+
 typedef struct oath_ocrasuite_st oath_ocrasuite_t;
 
 extern OATHAPI int
 oath_ocrasuite_parse (const char *ocrasuite,
-		       oath_ocrasuite_t **osh);
+		      oath_ocrasuite_t **osh);
 
 extern OATHAPI void
 oath_ocrasuite_done (oath_ocrasuite_t *osh);
@@ -417,7 +430,7 @@ oath_ocrasuite_done (oath_ocrasuite_t *osh);
 extern OATHAPI oath_ocra_hash_t
 oath_ocrasuite_get_cryptofunction_hash (oath_ocrasuite_t *osh);
 
-extern OATHAPI int
+extern OATHAPI unsigned
 oath_ocrasuite_get_cryptofunction_digits (oath_ocrasuite_t *osh);
 
 extern OATHAPI bool
@@ -432,10 +445,10 @@ oath_ocrasuite_get_challenge_length (oath_ocrasuite_t *osh);
 extern OATHAPI oath_ocra_hash_t
 oath_ocrasuite_get_password_hash (oath_ocrasuite_t *osh);
 
-extern OATHAPI int
+extern OATHAPI size_t
 oath_ocrasuite_get_session_length (oath_ocrasuite_t *osh);
 
-extern OATHAPI uint64_t
+extern OATHAPI unsigned
 oath_ocrasuite_get_time_step (oath_ocrasuite_t *osh);
 
 extern OATHAPI int
@@ -448,61 +461,58 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite,
 				       char *challenge);
 
 extern OATHAPI int
-oath_ocra_convert_challenge (size_t number_of_challenges,
-			     oath_ocra_challenge_t * challenge_type,
-			     const char **challenge_string,
-			     char *output_challenge,
-			     size_t * output_challenge_length);
+oath_ocra_challenge_convert (size_t number_of_challenges,
+			     const oath_ocra_challenge_t * challenge_type,
+			     const char * const *challenge_string,
+			     char *output_challenge);
 
 extern OATHAPI int
-oath_ocra_generate(const char *secret,
+oath_ocra_generate_raw (const char *secret,
 			size_t secret_length,
-			const char *ocrasuite,
+			oath_ocrasuite_t *ocrasuite,
 			uint64_t counter,
 			const char *challenges,
-			size_t challenges_length,
 			const char *password_hash,
 			const char *session,
 			time_t now,
 			char *output_ocra);
 
 extern OATHAPI int
-oath_ocra_generate2 (const char *secret,
-			size_t secret_length,
-			const char *ocrasuite,
-			uint64_t counter,
-			size_t number_of_challenges,
-			oath_ocra_challenge_t * challenge_type,
-			const char **challenge_string,
-			const char *password_hash,
-			const char *session,
-			time_t now,
-			char *output_ocra);
+oath_ocra_generate (const char *secret,
+		    size_t secret_length,
+		    oath_ocrasuite_t *ocrasuite,
+		    uint64_t counter,
+		    size_t nchalls,
+		    const oath_ocra_challenge_t * challtypes,
+		    const char * const *challstrings,
+		    const char *password_hash,
+		    const char *session,
+		    time_t now,
+		    char *output_ocra);
 
 extern OATHAPI int
-oath_ocra_validate(const char *secret,
+oath_ocra_validate_raw (const char *secret,
 			size_t secret_length,
-			const char *ocrasuite,
+			oath_ocrasuite_t *ocrasuite,
 			uint64_t counter,
 			const char *challenges,
-			size_t challenges_length,
 			const char *password_hash,
 			const char *session,
 			time_t now,
-			const char *validate_ocra);
+			const char *ocra_value);
 
 extern OATHAPI int
-oath_ocra_validate2 (const char *secret,
-			size_t secret_length,
-			const char *ocrasuite,
-			uint64_t counter,
-			size_t number_of_challenges,
-			oath_ocra_challenge_t * challenge_type,
-			const char **challenges,
-			const char *password_hash,
-			const char *session,
-			time_t now,
-			const char *validate_ocra);
+oath_ocra_validate (const char *secret,
+		    size_t secret_length,
+		    oath_ocrasuite_t *ocrasuite,
+		    uint64_t counter,
+		    size_t nchalls,
+		    const oath_ocra_challenge_t * challtypes,
+		    const char * const *challstrings,
+		    const char *password_hash,
+		    const char *session,
+		    time_t now,
+		    const char *ocra_value);
 
 /* Usersfile */
 

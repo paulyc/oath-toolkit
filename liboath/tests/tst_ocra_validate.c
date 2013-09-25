@@ -1,6 +1,7 @@
 /*
- * tst_ocra_algo.c - self-tests for liboath OCRA algorithm functions
+ * tst_ocra_validate.c - self-tests for liboath OCRA algorithm functions
  * Copyright (C) 2013 Fabian Grünbichler
+ * Copyright (C) 2013 Simon Josefsson
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -33,7 +34,7 @@ const struct
   char *secret;
   char *ocra_suite;
   uint64_t counter;
-  char *challenges_hex;
+  const char *challenges_hex;
   char *session;
   time_t now;
   char *validate_ocra;
@@ -43,7 +44,7 @@ const struct
   /* OCRA value modified */
   {
   "12345678901234567890", "OCRA-1:HOTP-SHA1-6:QN08", 0, "000000000", NULL,
-      0, "237654", OATH_STRCMP_ERROR},
+      0, "237654", OATH_INVALID_OTP},
     /* From RFC 6287. */
   {
   "12345678901234567890", "OCRA-1:HOTP-SHA1-6:QN08", 0, "000000000", NULL,
@@ -187,23 +188,38 @@ main (void)
 
   for (i = 0; i < sizeof (tv) / sizeof (tv[0]); i++)
     {
-      size_t bin_length = 0;
-      rc = oath_hex2bin (tv[i].challenges_hex, NULL, &bin_length);
-      char challenges_bin[bin_length];
-      rc = oath_hex2bin (tv[i].challenges_hex, challenges_bin, &bin_length);
+      oath_ocrasuite_t *osh;
+      char challenges_bin[128];
+      oath_ocra_challenge_t challtype = OATH_OCRA_CHALLENGE_HEX;
 
-      rc = oath_ocra_validate (tv[i].secret, strlen (tv[i].secret),
-			       tv[i].ocra_suite,
-			       tv[i].counter, challenges_bin,
-			       bin_length, pHash,
-			       tv[i].session, tv[i].now, tv[i].validate_ocra);
+      rc = oath_ocra_challenge_convert (1, &challtype, &tv[i].challenges_hex,
+					challenges_bin);
+      if (rc != OATH_OK)
+	{
+	  printf ("oath_ocra_challenge_convert[%d] rc %d\n", i, rc);
+	  return 1;
+	}
 
+      rc = oath_ocrasuite_parse (tv[i].ocra_suite, &osh);
+      if (rc != OATH_OK)
+	{
+	  printf ("oath_ocrasuite_parse[%d] error %d for %s\n",
+		  i, rc, tv[i].ocra_suite);
+	  return 1;
+	}
+
+      rc = oath_ocra_validate_raw (tv[i].secret, strlen (tv[i].secret),
+				   osh, tv[i].counter, challenges_bin,
+				   pHash, tv[i].session, tv[i].now,
+				   tv[i].validate_ocra);
+      oath_ocrasuite_done (osh);
       if (rc != tv[i].expected_rc)
 	{
 	  printf ("oath_ocra_validate at %d: %d, should have been %d\n", i,
 		  rc, tv[i].expected_rc);
 	  return 1;
 	}
-
     }
+
+  return 0;
 }
