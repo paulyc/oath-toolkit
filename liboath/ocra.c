@@ -238,7 +238,7 @@ parse_ocrasuite (const char *ocrasuite, oath_ocrasuite_t * ocrasuite_info)
  * Returns: On success, %OATH_OK (zero) is returned, otherwise an
  * error code is returned.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocrasuite_parse (const char *ocrasuite, oath_ocrasuite_t ** osh)
@@ -269,7 +269,7 @@ oath_ocrasuite_parse (const char *ocrasuite, oath_ocrasuite_t ** osh)
  * Releases all resources associated with the given @osh OCRASuite
  * handle.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 void
 oath_ocrasuite_done (oath_ocrasuite_t * osh)
@@ -285,7 +285,7 @@ oath_ocrasuite_done (oath_ocrasuite_t * osh)
  *
  * Returns: An %oath_ocra_hash_t hash function.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 oath_ocra_hash_t
 oath_ocrasuite_get_cryptofunction_hash (oath_ocrasuite_t * osh)
@@ -303,7 +303,7 @@ oath_ocrasuite_get_cryptofunction_hash (oath_ocrasuite_t * osh)
  *
  * Returns: Size of output code.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 unsigned
 oath_ocrasuite_get_cryptofunction_digits (oath_ocrasuite_t * osh)
@@ -319,7 +319,7 @@ oath_ocrasuite_get_cryptofunction_digits (oath_ocrasuite_t * osh)
  *
  * Returns: true if a counter is used, false otherwise.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 bool
 oath_ocrasuite_get_counter (oath_ocrasuite_t * osh)
@@ -336,7 +336,7 @@ oath_ocrasuite_get_counter (oath_ocrasuite_t * osh)
  * Returns: a %oath_ocra_challenge_format_t value, e.g.,
  * #OATH_OCRA_CHALLENGE_ALPHANUM.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 oath_ocra_challenge_format_t
 oath_ocrasuite_get_challenge_type (oath_ocrasuite_t * osh)
@@ -352,7 +352,7 @@ oath_ocrasuite_get_challenge_type (oath_ocrasuite_t * osh)
  *
  * Returns: challenge length.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 size_t
 oath_ocrasuite_get_challenge_length (oath_ocrasuite_t * osh)
@@ -368,7 +368,7 @@ oath_ocrasuite_get_challenge_length (oath_ocrasuite_t * osh)
  *
  * Returns: a %oath_ocra_hash_t value, e.g., #OATH_OCRA_HASH_SHA1.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 oath_ocra_hash_t
 oath_ocrasuite_get_password_hash (oath_ocrasuite_t * osh)
@@ -385,7 +385,7 @@ oath_ocrasuite_get_password_hash (oath_ocrasuite_t * osh)
  * Returns: length of the session, typical values are 64, 128, 256 and
  * 512.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 size_t
 oath_ocrasuite_get_session_length (oath_ocrasuite_t * osh)
@@ -401,7 +401,7 @@ oath_ocrasuite_get_session_length (oath_ocrasuite_t * osh)
  *
  * Returns: size of one time step in seconds.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 unsigned
 oath_ocrasuite_get_time_step (oath_ocrasuite_t * osh)
@@ -425,7 +425,7 @@ oath_ocrasuite_get_time_step (oath_ocrasuite_t * osh)
  *
  * Returns: %OATH_OK (zero) on success, an error code otherwise.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_challenge_generate (oath_ocra_challenge_format_t challtype,
@@ -493,7 +493,7 @@ oath_ocra_challenge_generate (oath_ocra_challenge_format_t challtype,
  *
  * Returns: %OATH_OK (zero) on success, an error code otherwise.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_challenge_generate_suitestr (const char *ocrasuite, char *challenge)
@@ -526,7 +526,7 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite, char *challenge)
  *
  * Returns: %OATH_OK (zero) on success, an error code otherwise.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_challenge_convert (size_t nchalls,
@@ -760,7 +760,7 @@ oath_ocra_generate_internal (const char *secret,
  * Returns: on success, %OATH_OK (zero) is returned, otherwise an
  * error code is returned.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_generate_raw (const char *secret,
@@ -816,7 +816,7 @@ oath_ocra_generate_raw (const char *secret,
  * Returns: on success, %OATH_OK (zero) is returned, otherwise an
  * error code is returned.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_generate (const char *secret,
@@ -867,7 +867,7 @@ oath_ocra_generate (const char *secret,
  *   value is incorrect %OATH_INVALID_OTP is returned, otherwise an
  *   error code.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_validate_raw (const char *secret,
@@ -929,7 +929,7 @@ oath_ocra_validate_raw (const char *secret,
  *
  * Returns: %OATH_OK (zero) on successful validation, an error code otherwise.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_ocra_validate (const char *secret,

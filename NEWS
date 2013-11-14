@@ -1,7 +1,7 @@
 OATH Toolkit NEWS -- History of user-visible changes.           -*- outline -*-
 Copyright (C) 2009-2013 Simon Josefsson.  Licensed under the GPLv3+.
 
-* Version 2.6.0 (unreleased)
+* Version 3.0.0 (unreleased)
 
 ** liboath: Support for OATH Challenge-Response Algorithm (OCRA) added.
 OCRA is a way to perform challenge-response authentication based on

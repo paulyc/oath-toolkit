@@ -108,7 +108,7 @@ oath_totp_generate (const char *secret,
  * Returns: On success, %OATH_OK (zero) is returned, otherwise an
  *   error code is returned.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_totp_generate2 (const char *secret,
@@ -454,7 +454,7 @@ oath_totp_validate3_callback (const char *secret,
  *   first position), or %OATH_INVALID_OTP if no OTP was found in OTP
  *   window, or an error code.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_totp_validate4 (const char *secret,
@@ -519,7 +519,7 @@ oath_totp_validate4 (const char *secret,
  *   first position), or %OATH_INVALID_OTP if no OTP was found in OTP
  *   window, or an error code.
  *
- * Since: 2.6.0
+ * Since: 3.0.0
  **/
 int
 oath_totp_validate4_callback (const char *secret,
