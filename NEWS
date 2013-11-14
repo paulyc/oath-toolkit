@@ -3,6 +3,19 @@ Copyright (C) 2009-2013 Simon Josefsson.  Licensed under the GPLv3+.
 
 * Version 2.6.0 (unreleased)
 
+** liboath: Support for OATH Challenge-Response Algorithm (OCRA) added.
+OCRA is a way to perform challenge-response authentication based on
+short numerical codes, similar to HOTP/TOTP.  It is specified in RFC
+6287.  New APIs were added for generating and validating OCRA values,
+generating challenges, and parsing OCRA Suite strings.  See API
+documentation for details.
+
+** oathtool: Introduce support for OCRA algorithm.
+Several parameters were added to facilitate OCRA support.  See the man
+page for details.
+
+** PAM module: Introduce support for one-way authentication using OCRA values.
+
 ** liboath: Support TOTP with HMAC-SHA256 and HMAC-SHA512.
 This adds new APIs oath_totp_generate2, oath_totp_validate4 and
 oath_totp_validate4_callback.
@@ -10,14 +23,6 @@ oath_totp_validate4_callback.
 ** oathtool: The --totp parameter now take an optional argument to specify MAC.
 For example use --totp=sha256 to use HMAC-SHA256.  When --totp is used
 the default HMAC-SHA1 is used, as before.
-
-** liboath: Add new API methdos for generating and validating OCRA values. See
-API documentation for details.
-
-** oathtool: Introduce support for OCRA algorithm, including new flags to
-specify --suite and --challenges .
-
-** PAM module: Introduce support for one-way authentication using OCRA values.
 
 * Version 2.4.0 (released 2013-07-21)
 
