@@ -81,7 +81,7 @@ const struct
   uint64_t counter;
   const char *challenge_strings[2];
   size_t number_of_challenges;
-  const oath_ocra_challenge_t challenge_types[2];
+  const oath_ocra_challenge_format_t challenge_types[2];
   char challenges_binary[128];
   size_t challenges_binary_length;
   char *session;

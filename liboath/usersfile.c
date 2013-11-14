@@ -285,7 +285,7 @@ parse_usersfile (const char *username,
 	case OATH_ALGO_OCRA:
 	  {
 	    oath_ocrasuite_t *os;
-	    oath_ocra_challenge_t challenge_type;
+	    oath_ocra_challenge_format_t challenge_type;
 
 	    rc = oath_ocrasuite_parse (ocra_suite, &os);
 	    if (rc != OATH_OK)

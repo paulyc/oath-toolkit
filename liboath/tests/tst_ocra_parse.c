@@ -33,7 +33,7 @@ const struct
   oath_ocra_hash_t ocra_hash;
   uint8_t digits;
   bool counter;
-  oath_ocra_challenge_t challenge_type;
+  oath_ocra_challenge_format_t challenge_type;
   uint8_t challenge_length;
   oath_ocra_hash_t password_hash;
   uint16_t session_length;
@@ -96,7 +96,7 @@ main (void)
       int digits;
       bool counter;
       oath_ocra_hash_t password_hash;
-      oath_ocra_challenge_t challenge_type;
+      oath_ocra_challenge_format_t challenge_type;
       size_t challenge_length;
       uint16_t time_step_size;
       size_t session_length;

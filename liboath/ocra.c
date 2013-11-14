@@ -112,8 +112,8 @@ struct oath_ocrasuite_st
   unsigned digits;
   /* Flag indicating whether a counter value is used as data input. */
   bool use_counter;
-  /* Defines challenge type, see %oath_ocra_challenge_t. */
-  oath_ocra_challenge_t challenge_type;
+  /* Defines challenge type, see %oath_ocra_challenge_format_t. */
+  oath_ocra_challenge_format_t challenge_type;
   /* Defines length of one challenge string. */
   size_t challenge_length;
   /* Defines which hash function is used for password hashes.
@@ -333,12 +333,12 @@ oath_ocrasuite_get_counter (oath_ocrasuite_t * osh)
  *
  * Get the challenge format in the @osh OCRASuite.
  *
- * Returns: a %oath_ocra_challenge_t value, e.g.,
+ * Returns: a %oath_ocra_challenge_format_t value, e.g.,
  * #OATH_OCRA_CHALLENGE_ALPHANUM.
  *
  * Since: 2.6.0
  **/
-oath_ocra_challenge_t
+oath_ocra_challenge_format_t
 oath_ocrasuite_get_challenge_type (oath_ocrasuite_t * osh)
 {
   return osh->challenge_type;
@@ -411,7 +411,7 @@ oath_ocrasuite_get_time_step (oath_ocrasuite_t * osh)
 
 /**
  * oath_ocra_challenge_generate:
- * @challtype: a %oath_ocra_challenge_t type, e.g., #OATH_OCRA_CHALLENGE_HEX.
+ * @challtype: a %oath_ocra_challenge_format_t type, e.g., #OATH_OCRA_CHALLENGE_HEX.
  * @length: length of challenge to generate.
  * @challenge: Output buffer, needs space for 65 chars.
  *
@@ -428,7 +428,7 @@ oath_ocrasuite_get_time_step (oath_ocrasuite_t * osh)
  * Since: 2.6.0
  **/
 int
-oath_ocra_challenge_generate (oath_ocra_challenge_t challtype,
+oath_ocra_challenge_generate (oath_ocra_challenge_format_t challtype,
 			      size_t length, char *challenge)
 {
   const char *lookup =
@@ -512,14 +512,14 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite, char *challenge)
 /**
  * oath_ocra_challenge_convert:
  * @nchalls: Number of elements in @challtypes and @challstrings.
- * @challtypes: Array of size @nchalls with %oath_ocra_challenge_t types.
+ * @challtypes: Array of size @nchalls with %oath_ocra_challenge_format_t types.
  * @challstrings: Array of size @nchalls with challenge strings.
  * @output_challenge: 128-byte output buffer with binary challenge data.
  *
  * Convert challenge question(s) to binary and concatenate them to
  * form the 128-byte binary challenge Q value.  The challenge types
  * are given in the @challtypes array, which holds
- * %oath_ocra_challenge_t values, and the challenge strings are given
+ * %oath_ocra_challenge_format_t values, and the challenge strings are given
  * in the @challstrings array.  The function will decode and
  * concatenate the first @nchalls elements of the arrays, so both
  * arrays must be at least this large.
@@ -530,7 +530,7 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite, char *challenge)
  **/
 int
 oath_ocra_challenge_convert (size_t nchalls,
-			     const oath_ocra_challenge_t * challtypes,
+			     const oath_ocra_challenge_format_t * challtypes,
 			     const char * const *challstrings,
 			     char *output_challenge)
 {
@@ -785,7 +785,7 @@ oath_ocra_generate_raw (const char *secret,
  * @ocrasuite: the OCRASuite in the form of a parsed %oath_ocrasuite_t.
  * @counter: Counter value, optional (see @ocrasuite).
  * @nchalls: Number of elements in @challtypes and @challstrings.
- * @challtypes: Array of size @nchalls with %oath_ocra_challenge_t types.
+ * @challtypes: Array of size @nchalls with %oath_ocra_challenge_format_t types.
  * @challstrings: Array of size @nchalls with challenge strings.
  * @password_hash: Hashed password value, optional (see @ocrasuite).
  * @session: Static data about current session, optional (see @ocra-suite).
@@ -805,7 +805,7 @@ oath_ocra_generate_raw (const char *secret,
  * The challenge strings (NUL terminated) passed in the @challstrings
  * array with @nchalls elements are combined into one 128-byte binary
  * challenge.  The @challtypes array, also of at least @nchalls size,
- * holds the %oath_ocra_challenge_t type of each string.
+ * holds the %oath_ocra_challenge_format_t type of each string.
  *
  * The output buffer @output_ocra must have room for at least as many
  * digits as specified as part of @ocrasuite, plus one terminating NUL
@@ -824,7 +824,7 @@ oath_ocra_generate (const char *secret,
 		    oath_ocrasuite_t *ocrasuite,
 		    uint64_t counter,
 		    size_t nchalls,
-		    const oath_ocra_challenge_t * challtypes,
+		    const oath_ocra_challenge_format_t * challtypes,
 		    const char * const *challstrings,
 		    const char *password_hash,
 		    const char *session,
@@ -909,7 +909,7 @@ oath_ocra_validate_raw (const char *secret,
  * @ocrasuite: the OCRASuite in the form of a parsed %oath_ocrasuite_t.
  * @counter: Counter value, optional (see @ocrasuite).
  * @nchalls: Number of elements in @challtypes and @challstrings.
- * @challtypes: Array of size @nchalls with %oath_ocra_challenge_t types.
+ * @challtypes: Array of size @nchalls with %oath_ocra_challenge_format_t types.
  * @challstrings: Array of size @nchalls with challenge strings.
  * @password_hash: Hashed password value, optional (see @ocrasuite).
  * @session: Static data about current session, optional (see @ocra-suite).
@@ -937,7 +937,7 @@ oath_ocra_validate (const char *secret,
 		    oath_ocrasuite_t *ocrasuite,
 		    uint64_t counter,
 		    size_t nchalls,
-		    const oath_ocra_challenge_t * challtypes,
+		    const oath_ocra_challenge_format_t * challtypes,
 		    const char * const *challstrings,
 		    const char *password_hash,
 		    const char *session,

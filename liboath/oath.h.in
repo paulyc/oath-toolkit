@@ -390,7 +390,7 @@ typedef enum {
 } oath_ocra_hash_t;
 
 /**
- * oath_ocra_challenge_t:
+ * oath_ocra_challenge_format_t:
  * @OATH_OCRA_CHALLENGE_ALPHANUM: Challenge string is alphanumeric.
  * @OATH_OCRA_CHALLENGE_NUM: Challenge string is numerical.
  * @OATH_OCRA_CHALLENGE_HEX: Challenge string is hexadecimal.
@@ -405,13 +405,13 @@ typedef enum
   OATH_OCRA_CHALLENGE_ALPHANUM = 0,
   OATH_OCRA_CHALLENGE_NUM = 1,
   OATH_OCRA_CHALLENGE_HEX = 2
-} oath_ocra_challenge_t;
+} oath_ocra_challenge_format_t;
 
 /**
  * OATH_OCRASUITE_MAXLEN
  *
- * Length of longest possible OCRASuite string that is compliant
- * with RFC 6287.  Currently it is of the form
+ * Length of longest possible OCRASuite string that the library
+ * supports.  Currently it is of the form
  * "OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M" which is 47
  * characters not including the terminating NUL.
  */
@@ -436,7 +436,7 @@ oath_ocrasuite_get_cryptofunction_digits (oath_ocrasuite_t *osh);
 extern OATHAPI bool
 oath_ocrasuite_get_counter (oath_ocrasuite_t *osh);
 
-extern OATHAPI oath_ocra_challenge_t
+extern OATHAPI oath_ocra_challenge_format_t
 oath_ocrasuite_get_challenge_type (oath_ocrasuite_t *osh);
 
 extern OATHAPI size_t
@@ -452,7 +452,7 @@ extern OATHAPI unsigned
 oath_ocrasuite_get_time_step (oath_ocrasuite_t *osh);
 
 extern OATHAPI int
-oath_ocra_challenge_generate (oath_ocra_challenge_t challtype,
+oath_ocra_challenge_generate (oath_ocra_challenge_format_t challtype,
 			      size_t length,
 			      char *challenge);
 
@@ -462,7 +462,7 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite,
 
 extern OATHAPI int
 oath_ocra_challenge_convert (size_t number_of_challenges,
-			     const oath_ocra_challenge_t * challenge_type,
+			     const oath_ocra_challenge_format_t * challenge_type,
 			     const char * const *challenge_string,
 			     char *output_challenge);
 
@@ -483,7 +483,7 @@ oath_ocra_generate (const char *secret,
 		    oath_ocrasuite_t *ocrasuite,
 		    uint64_t counter,
 		    size_t nchalls,
-		    const oath_ocra_challenge_t * challtypes,
+		    const oath_ocra_challenge_format_t * challtypes,
 		    const char * const *challstrings,
 		    const char *password_hash,
 		    const char *session,
@@ -507,7 +507,7 @@ oath_ocra_validate (const char *secret,
 		    oath_ocrasuite_t *ocrasuite,
 		    uint64_t counter,
 		    size_t nchalls,
-		    const oath_ocra_challenge_t * challtypes,
+		    const oath_ocra_challenge_format_t * challtypes,
 		    const char * const *challstrings,
 		    const char *password_hash,
 		    const char *session,

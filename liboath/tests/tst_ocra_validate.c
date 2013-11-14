@@ -190,7 +190,7 @@ main (void)
     {
       oath_ocrasuite_t *osh;
       char challenges_bin[128];
-      oath_ocra_challenge_t challtype = OATH_OCRA_CHALLENGE_HEX;
+      oath_ocra_challenge_format_t challtype = OATH_OCRA_CHALLENGE_HEX;
 
       rc = oath_ocra_challenge_convert (1, &challtype, &tv[i].challenges_hex,
 					challenges_bin);

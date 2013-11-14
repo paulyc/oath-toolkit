@@ -29,7 +29,7 @@
 
 const struct
 {
-  oath_ocra_challenge_t type;
+  oath_ocra_challenge_format_t type;
   const char *ocra_suite;
   size_t length;
 } tv[] =
