@@ -115,22 +115,38 @@ verbose_totp (time_t t0, time_t time_step_size, time_t when)
 }
 
 static char *
-map_hash (oath_ocra_hash_t hash)
+map_cf (oath_ocra_cryptofunction_t cf)
+{
+  switch (cf)
+    {
+    case OATH_OCRA_CF_HOTP_SHA1:
+      return "HOTP-SHA1-t";
+    case OATH_OCRA_CF_HOTP_SHA256:
+      return "HOTP-SHA256-t";
+    case OATH_OCRA_CF_HOTP_SHA512:
+      return "HOTP-SHA512-t";
+    default:
+      return "UNDEFINED";
+    }
+}
+
+static char *
+map_hash (oath_ocra_passwordhash_t hash)
 {
   switch (hash)
     {
-    case OATH_OCRA_HASH_SHA1:
+    case OATH_OCRA_PH_SHA1:
       return "SHA1";
-    case OATH_OCRA_HASH_SHA256:
+    case OATH_OCRA_PH_SHA256:
       return "SHA256";
-    case OATH_OCRA_HASH_SHA512:
+    case OATH_OCRA_PH_SHA512:
       return "SHA512";
     default:
       return "UNDEFINED";
     }
 }
 
-static oath_ocra_challenge_t
+static oath_ocra_challenge_format_t
 map_chall_t (char *chall_type_str) {
 	if(strcmp(chall_type_str,"num")==0)
 		return OATH_OCRA_CHALLENGE_NUM;
@@ -144,7 +160,7 @@ static void
 verbose_ocra (char *ocrasuite)
 {
   oath_ocrasuite_t *osh;
-  oath_ocra_challenge_t challenge_type;
+  oath_ocra_challenge_format_t challenge_type;
   int rc;
 
   rc = oath_ocrasuite_parse (ocrasuite, &osh);
@@ -158,8 +174,8 @@ verbose_ocra (char *ocrasuite)
 
   printf ("OCRAsuite '%s' contains the following specification:\n",
 	  ocrasuite);
-  printf ("\tHMAC algorithm used: %s\n",
-	  map_hash (oath_ocrasuite_get_cryptofunction_hash (osh)));
+  printf ("\tCryptoFunction used: %s\n",
+	  map_cf (oath_ocrasuite_get_cryptofunction (osh)));
   printf ("\tHMAC truncated to %d digits\n",
 	  oath_ocrasuite_get_cryptofunction_digits (osh));
   printf ("\tDatainput:\n");
@@ -180,7 +196,7 @@ verbose_ocra (char *ocrasuite)
   else
     printf ("\tcounter: no\n");
 
-  if (oath_ocrasuite_get_password_hash (osh) == OATH_OCRA_HASH_NONE)
+  if (oath_ocrasuite_get_password_hash (osh) == OATH_OCRA_PH_NONE)
     printf ("\tpassword hash: no\n");
   else
     printf ("\tpassword hash: %s\n",
@@ -219,8 +235,8 @@ main (int argc, char *argv[])
   size_t bin_length;
   char *phash_bin = NULL;
   oath_ocrasuite_t *osh;
-  oath_ocra_challenge_t chall_type;
-  oath_ocra_challenge_t *chall_type_p;
+  oath_ocra_challenge_format_t chall_type;
+  oath_ocra_challenge_format_t *chall_type_p;
   char *challenge;
   size_t chall_length;
   int totpflags = 0;
@@ -543,30 +559,36 @@ main (int argc, char *argv[])
       now = time (NULL);
       when = parse_time (args_info.now_arg, now);
 
-	  if(args_info.challenge_given == 1 && args_info.challenge_type_given == 0) {
-		rc = oath_ocrasuite_parse(args_info.suite_orig,&osh);
-		if(rc!=OATH_OK)
-			error(EXIT_FAILURE, 0, "could not parse OCRAsuite string");
-		chall_type = oath_ocrasuite_get_challenge_type(osh);
-		chall_type_p = &chall_type;
-	} else if(args_info.challenge_given != args_info.challenge_type_given) {
-		error(EXIT_FAILURE, 0, "number of challenges and number of challenge types do not match");
-	} else {
-		size_t i;
-		chall_type_p = malloc(sizeof(oath_ocra_challenge_t)*args_info.challenge_type_given);
-		for(i=0;i<args_info.challenge_type_given;i++)
-			*(chall_type_p+i)=map_chall_t(args_info.challenge_type_arg[i]);
-	}	
+      if (args_info.challenge_given == 1
+	  && args_info.challenge_type_given == 0)
+	{
+	  rc = oath_ocrasuite_parse(args_info.suite_orig,&osh);
+	  if(rc!=OATH_OK)
+	    error(EXIT_FAILURE, 0, "could not parse OCRAsuite string");
+	  chall_type = oath_ocrasuite_get_challenge_type(osh);
+	  chall_type_p = &chall_type;
+	}
+      else if (args_info.challenge_given != args_info.challenge_type_given)
+	{
+	  error(EXIT_FAILURE, 0, "number of challenges and number of challenge types do not match");
+	}
+      else
+	{
+	  size_t i;
+	  chall_type_p = malloc(sizeof(oath_ocra_challenge_format_t)*args_info.challenge_type_given);
+	  for(i=0;i<args_info.challenge_type_given;i++)
+	    *(chall_type_p+i)=map_chall_t(args_info.challenge_type_arg[i]);
+	}
+
+      char Q[128];
 
       if (generate_otp_p (args_info.inputs_num))
 	{
-	  rc = oath_ocra_generate2 (secret,
+	  rc = oath_ocra_generate (secret,
 				   secretlen,
-				   args_info.suite_arg,
+				   osh,
 				   args_info.counter_arg,
-				   args_info.challenge_given,
-				   chall_type_p,
-				   args_info.challenge_orig,
+				   Q,
 				   phash_bin,
 				   args_info.session_info_arg, when, otp);
 	  if (rc != OATH_OK)
@@ -575,13 +597,11 @@ main (int argc, char *argv[])
 	}
       else if (validate_otp_p (args_info.inputs_num))
 	{
-	  rc = oath_ocra_validate2 (secret,
+	  rc = oath_ocra_validate (secret,
 				   secretlen,
-				   args_info.suite_arg,
+				   osh,
 				   args_info.counter_arg,
-				   args_info.challenge_given,
-				   chall_type_p,
-				   args_info.challenge_orig,
+				   Q,
 				   phash_bin,
 				   args_info.session_info_arg,
 				   when, args_info.inputs[1]);
