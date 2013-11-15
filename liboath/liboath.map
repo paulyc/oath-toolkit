@@ -85,15 +85,13 @@ LIBOATH_3.0.0
     oath_ocra_challenge_generate;
     oath_ocra_challenge_generate_suitestr;
     oath_ocra_generate;
-    oath_ocra_generate_raw;
     oath_ocra_validate;
-    oath_ocra_validate_raw;
     oath_ocrasuite_done;
     oath_ocrasuite_get_challenge_length;
     oath_ocrasuite_get_challenge_type;
     oath_ocrasuite_get_counter;
+    oath_ocrasuite_get_cryptofunction;
     oath_ocrasuite_get_cryptofunction_digits;
-    oath_ocrasuite_get_cryptofunction_hash;
     oath_ocrasuite_get_password_hash;
     oath_ocrasuite_get_session_length;
     oath_ocrasuite_get_time_step;

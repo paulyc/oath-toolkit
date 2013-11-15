@@ -30,46 +30,46 @@ const struct
 {
   char *ocrasuite;
   int rc;
-  oath_ocra_hash_t ocra_hash;
+  oath_ocra_cryptofunction_t ocra_cf;
   uint8_t digits;
   bool counter;
   oath_ocra_challenge_format_t challenge_type;
   uint8_t challenge_length;
-  oath_ocra_hash_t password_hash;
+  oath_ocra_passwordhash_t password_hash;
   uint16_t session_length;
-  uint16_t time_step_size;
+  uint16_t time_step;
 } tv[] =
 {
   {
     "OCRA-1:HOTP-SHA1-8:QN08", OATH_OK,
-    OATH_OCRA_HASH_SHA1, 8, 0,
-    OATH_OCRA_CHALLENGE_NUM, 8, OATH_OCRA_HASH_NONE, 0, 0
+    OATH_OCRA_CF_HOTP_SHA1, 8, 0,
+    OATH_OCRA_CHALLENGE_NUM, 8, OATH_OCRA_PH_NONE, 0, 0
   },
   {
     "OCRA-2:HOTP-SHA1-6:QN08", OATH_SUITE_PARSE_ERROR
   },
   {
     "OCRA-1:HOTP-SHA256-6:C-QA10", OATH_OK,
-    OATH_OCRA_HASH_SHA256, 6, 1, OATH_OCRA_CHALLENGE_ALPHANUM, 10,
-    OATH_OCRA_HASH_NONE, 0, 0
+    OATH_OCRA_CF_HOTP_SHA256, 6, 1, OATH_OCRA_CHALLENGE_ALPHANUM, 10,
+    OATH_OCRA_PH_NONE, 0, 0
   },
   {
     "OCRA-1:HOTP-SHA512-2:C-QH24", OATH_SUITE_PARSE_ERROR
   },
   {
     "OCRA-1:HOTP-SHA1-0:C-QA20-PSHA512-S128-T12M", OATH_OK,
-    OATH_OCRA_HASH_SHA1, 0, 1, OATH_OCRA_CHALLENGE_ALPHANUM, 20,
-    OATH_OCRA_HASH_SHA512, 128, 720
+    OATH_OCRA_CF_HOTP_SHA1, 0, 1, OATH_OCRA_CHALLENGE_ALPHANUM, 20,
+    OATH_OCRA_PH_SHA512, 128, 720
   },
   {
     "OCRA-1:HOTP-SHA256-10:QN64-PSHA512-S064-T12H", OATH_OK,
-    OATH_OCRA_HASH_SHA256, 10, 0, OATH_OCRA_CHALLENGE_NUM, 64,
-    OATH_OCRA_HASH_SHA512, 64, 12 * 60 * 60
+    OATH_OCRA_CF_HOTP_SHA256, 10, 0, OATH_OCRA_CHALLENGE_NUM, 64,
+    OATH_OCRA_PH_SHA512, 64, 12 * 60 * 60
   },
   {
     "OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M", OATH_OK,
-    OATH_OCRA_HASH_SHA512, 10, 1, OATH_OCRA_CHALLENGE_ALPHANUM, 64,
-    OATH_OCRA_HASH_SHA512, 512, 12 * 60 * 60
+    OATH_OCRA_CF_HOTP_SHA512, 10, 1, OATH_OCRA_CHALLENGE_ALPHANUM, 64,
+    OATH_OCRA_PH_SHA512, 512, 59 * 60
   },
   {
     "OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S5123-T59M", OATH_SUITE_PARSE_ERROR
@@ -92,13 +92,13 @@ main (void)
   for (i = 0; i < sizeof (tv) / sizeof (tv[0]); i++)
     {
       oath_ocrasuite_t *osi;
-      oath_ocra_hash_t ocra_hash;
+      oath_ocra_cryptofunction_t ocra_cf;
       int digits;
       bool counter;
-      oath_ocra_hash_t password_hash;
+      oath_ocra_passwordhash_t password_hash;
       oath_ocra_challenge_format_t challenge_type;
       size_t challenge_length;
-      uint16_t time_step_size;
+      unsigned time_step;
       size_t session_length;
 
       rc = oath_ocrasuite_parse (tv[i].ocrasuite, &osi);
@@ -111,11 +111,11 @@ main (void)
       if (rc != OATH_OK)
 	continue;
 
-      ocra_hash = oath_ocrasuite_get_cryptofunction_hash (osi);
-      if (ocra_hash != tv[i].ocra_hash)
+      ocra_cf = oath_ocrasuite_get_cryptofunction (osi);
+      if (ocra_cf != tv[i].ocra_cf)
 	{
-	  printf ("hash mismatch for testcase #%d: %d vs %d\n", i, ocra_hash,
-		  tv[i].ocra_hash);
+	  printf ("cf mismatch for testcase #%d: %d vs %d\n", i, ocra_cf,
+		  tv[i].ocra_cf);
 	  return 1;
 	}
 
@@ -164,6 +164,14 @@ main (void)
 	{
 	  printf ("session_length mismatch for testcase #%d: %d vs %d\n", i,
 		  session_length, tv[i].session_length);
+	  return 1;
+	}
+
+      time_step = oath_ocrasuite_get_time_step (osi);
+      if (time_step != tv[i].time_step)
+	{
+	  printf ("time_step mismatch for testcase #%d: %d vs %d\n", i,
+		  time_step, tv[i].time_step);
 	  return 1;
 	}
 

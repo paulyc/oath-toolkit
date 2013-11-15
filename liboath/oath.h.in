@@ -374,20 +374,36 @@ oath_totp_validate4_callback (const char *secret,
 /* OCRA */
 
 /**
- * oath_ocra_hash_t:
- * @OATH_OCRA_HASH_NONE: No hash function set.
- * @OATH_OCRA_HASH_SHA1: Use SHA1 hash function.
- * @OATH_OCRA_HASH_SHA256: Use SHA256 hash function.
- * @OATH_OCRA_HASH_SHA512: Use SHA512 hash function.
+ * oath_ocra_cryptofunction_t:
+ * @OATH_OCRA_CF_NONE: No CryptoFunction set.
+ * @OATH_OCRA_CF_HOTP_SHA1: Use the HOTP-SHA1-t CryptoFunction family.
+ * @OATH_OCRA_CF_HOTP_SHA256: Use the HOTP-SHA256-t CryptoFunction family.
+ * @OATH_OCRA_CF_HOTP_SHA512: Use the HOTP-SHA512-t CryptoFunction family.
  *
- * Hash functions used for HOTP CryptoFunction and PIN/password hash.
+ * CryptoFunction used; e.g., HOTP-SHA1-t.
  **/
 typedef enum {
-    OATH_OCRA_HASH_NONE,
-    OATH_OCRA_HASH_SHA1,
-    OATH_OCRA_HASH_SHA256,
-    OATH_OCRA_HASH_SHA512
-} oath_ocra_hash_t;
+    OATH_OCRA_CF_NONE = 0,
+    OATH_OCRA_CF_HOTP_SHA1 = 1,
+    OATH_OCRA_CF_HOTP_SHA256 = 2,
+    OATH_OCRA_CF_HOTP_SHA512 = 3
+} oath_ocra_cryptofunction_t;
+
+/**
+ * oath_ocra_passwordhash_t:
+ * @OATH_OCRA_PH_NONE: No hash function set, use password directly.
+ * @OATH_OCRA_PH_SHA1: Use SHA1 hash function.
+ * @OATH_OCRA_PH_SHA256: Use SHA256 hash function.
+ * @OATH_OCRA_PH_SHA512: Use SHA512 hash function.
+ *
+ * Hash functions used to hash PIN/password.
+ **/
+typedef enum {
+  OATH_OCRA_PH_NONE = 0,
+  OATH_OCRA_PH_SHA1 = 1,
+  OATH_OCRA_PH_SHA256 = 2,
+  OATH_OCRA_PH_SHA512 = 3
+} oath_ocra_passwordhash_t;
 
 /**
  * oath_ocra_challenge_format_t:
@@ -418,6 +434,13 @@ typedef enum
 #define OATH_OCRASUITE_MAXLEN \
   sizeof("OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M")
 
+/**
+ * OATH_CHALLENGE_MAXLEN
+ *
+ * Size of the challenge, hard coded to 128 bytes by RFC 6287.
+ */
+#define OATH_CHALLENGE_MAXLEN 128
+
 typedef struct oath_ocrasuite_st oath_ocrasuite_t;
 
 extern OATHAPI int
@@ -427,8 +450,8 @@ oath_ocrasuite_parse (const char *ocrasuite,
 extern OATHAPI void
 oath_ocrasuite_done (oath_ocrasuite_t *osh);
 
-extern OATHAPI oath_ocra_hash_t
-oath_ocrasuite_get_cryptofunction_hash (oath_ocrasuite_t *osh);
+extern OATHAPI oath_ocra_cryptofunction_t
+oath_ocrasuite_get_cryptofunction (oath_ocrasuite_t *osh);
 
 extern OATHAPI unsigned
 oath_ocrasuite_get_cryptofunction_digits (oath_ocrasuite_t *osh);
@@ -442,7 +465,7 @@ oath_ocrasuite_get_challenge_type (oath_ocrasuite_t *osh);
 extern OATHAPI size_t
 oath_ocrasuite_get_challenge_length (oath_ocrasuite_t *osh);
 
-extern OATHAPI oath_ocra_hash_t
+extern OATHAPI oath_ocra_passwordhash_t
 oath_ocrasuite_get_password_hash (oath_ocrasuite_t *osh);
 
 extern OATHAPI size_t
@@ -461,54 +484,28 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite,
 				       char *challenge);
 
 extern OATHAPI int
-oath_ocra_challenge_convert (size_t number_of_challenges,
-			     const oath_ocra_challenge_format_t * challenge_type,
-			     const char * const *challenge_string,
+oath_ocra_challenge_convert (size_t nchalls,
+			     const oath_ocra_challenge_format_t * challtypes,
+			     const char * const *challstrings,
 			     char *output_challenge);
-
-extern OATHAPI int
-oath_ocra_generate_raw (const char *secret,
-			size_t secret_length,
-			oath_ocrasuite_t *ocrasuite,
-			uint64_t counter,
-			const char *challenges,
-			const char *password_hash,
-			const char *session,
-			time_t now,
-			char *output_ocra);
 
 extern OATHAPI int
 oath_ocra_generate (const char *secret,
 		    size_t secret_length,
 		    oath_ocrasuite_t *ocrasuite,
 		    uint64_t counter,
-		    size_t nchalls,
-		    const oath_ocra_challenge_format_t * challtypes,
-		    const char * const *challstrings,
+		    const char *challenges,
 		    const char *password_hash,
 		    const char *session,
 		    time_t now,
 		    char *output_ocra);
 
 extern OATHAPI int
-oath_ocra_validate_raw (const char *secret,
-			size_t secret_length,
-			oath_ocrasuite_t *ocrasuite,
-			uint64_t counter,
-			const char *challenges,
-			const char *password_hash,
-			const char *session,
-			time_t now,
-			const char *ocra_value);
-
-extern OATHAPI int
 oath_ocra_validate (const char *secret,
 		    size_t secret_length,
 		    oath_ocrasuite_t *ocrasuite,
 		    uint64_t counter,
-		    size_t nchalls,
-		    const oath_ocra_challenge_format_t * challtypes,
-		    const char * const *challstrings,
+		    const char *challenges,
 		    const char *password_hash,
 		    const char *session,
 		    time_t now,

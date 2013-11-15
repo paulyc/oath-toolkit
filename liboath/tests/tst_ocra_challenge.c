@@ -71,8 +71,8 @@ main (void)
       char *tmp = challenge;
       int j;
 
-      rc =
-	oath_ocra_challenge_generate_suitestr (tv[i].ocra_suite, challenge);
+      rc = oath_ocra_challenge_generate_suitestr (tv[i].ocra_suite,
+						  challenge);
       if (rc != OATH_OK)
 	{
 	  printf ("oath_ocra_challenge_generate_suitestr at %d: %d\n", i, rc);
@@ -90,6 +90,7 @@ main (void)
 		  strlen (challenge), tv[i].length);
 	  return 1;
 	}
+
       switch (tv[i].type)
 	{
 	case OATH_OCRA_CHALLENGE_NUM:
@@ -97,9 +98,8 @@ main (void)
 	    {
 	      if (!isdigit (*tmp))
 		{
-		  printf
-		    ("OATH_OCRA_CHALLENGE_NUM challenge contains non-digit char at position %d: %c\n",
-		     j, *tmp);
+		  printf ("OATH_OCRA_CHALLENGE_NUM challenge contains "
+			  "non-digit char at position %d: %c\n", j, *tmp);
 		  return 1;
 		}
 	    }
@@ -110,9 +110,8 @@ main (void)
 	    {
 	      if (!isxdigit (*tmp))
 		{
-		  printf
-		    ("OATH_OCRA_CHALLENGE_HEX challenge contains non-hex char at position %d: %c\n",
-		     j, *tmp);
+		  printf ("OATH_OCRA_CHALLENGE_HEX challenge contains "
+			  "non-hex char at position %d: %c\n", j, *tmp);
 		  return 1;
 		}
 	    }
@@ -123,15 +122,15 @@ main (void)
 	    {
 	      if (!isalnum (*tmp))
 		{
-		  printf
-		    ("OATH_OCRA_CHALLENGE_ALPHANUM challenge contains non-alphanumeric char at position %d: %c\n",
-		     j, *tmp);
+		  printf ("OATH_OCRA_CHALLENGE_ALPHANUM challenge contains "
+			  "non-alphanumeric char at position %d: %c\n",
+			  j, *tmp);
 		  return 1;
 		}
 	    }
 	  break;
-
 	}
     }
+
   return 0;
 }

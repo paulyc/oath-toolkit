@@ -27,9 +27,10 @@
 #include <stdio.h>
 
 const char *pHash =
-  "\x71\x10\xed\xa4\xd0\x9e\x06\x2a\xa5\xe4\xa3\x90\xb0\xa5\x72\xac\x0d\x2c\x02\x20";
+  "\x71\x10\xed\xa4\xd0\x9e\x06\x2a\xa5\xe4"
+  "\xa3\x90\xb0\xa5\x72\xac\x0d\x2c\x02\x20";
 
-const struct
+static const struct
 {
   char *secret;
   char *ocra_suite;
@@ -208,10 +209,10 @@ main (void)
 	  return 1;
 	}
 
-      rc = oath_ocra_validate_raw (tv[i].secret, strlen (tv[i].secret),
-				   osh, tv[i].counter, challenges_bin,
-				   pHash, tv[i].session, tv[i].now,
-				   tv[i].validate_ocra);
+      rc = oath_ocra_validate (tv[i].secret, strlen (tv[i].secret),
+			       osh, tv[i].counter, challenges_bin,
+			       pHash, tv[i].session, tv[i].now,
+			       tv[i].validate_ocra);
       oath_ocrasuite_done (osh);
       if (rc != tv[i].expected_rc)
 	{

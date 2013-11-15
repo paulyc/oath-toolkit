@@ -285,23 +285,30 @@ parse_usersfile (const char *username,
 	case OATH_ALGO_OCRA:
 	  {
 	    oath_ocrasuite_t *os;
-	    oath_ocra_challenge_format_t challenge_type;
 
 	    rc = oath_ocrasuite_parse (ocra_suite, &os);
 	    if (rc != OATH_OK)
-	      rc = 1;
+	      {
+		rc = 1;
+		break;
+	      }
 	    else
 	      {
+		oath_ocra_challenge_format_t challenge_type;
+		char Q[128];
+
 		challenge_type = oath_ocrasuite_get_challenge_type (os);
+
+		rc = oath_ocra_challenge_convert (1, &challenge_type,
+						  &challenge, Q);
+
 		rc = oath_ocra_validate (secret, secret_length,
-					 os,
-					 start_moving_factor,
-					 1,
-					 &challenge_type,
-					 &challenge, NULL, NULL, time (NULL),
+					 os, start_moving_factor,
+					 Q, NULL, NULL, time (NULL),
 					 otp);
 		if (rc == OATH_OK)
 		  rc = 1;
+
 		oath_ocrasuite_done (os);
 	      }
 	  }
@@ -572,6 +579,8 @@ oath_authenticate_usersfile (const char *usersfile,
  *   If the one-time password is not found in the indicated search
  *   window, %OATH_INVALID_OTP is returned.  Otherwise, an error code
  *   is returned.
+ *
+ * Since: 3.0.0
  **/
 int
 oath_authenticate_usersfile2 (const char *usersfile,
