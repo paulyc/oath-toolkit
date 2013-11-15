@@ -73,9 +73,9 @@ parse_type (const char *str, oath_alg_t * alg, unsigned *digits,
   else if (strncmp (str, "OCRA", 4) == 0)
     {
       *alg = OATH_ALGO_OCRA;
-      if (strlen (str) > 43)
+      if (strlen (str) > OATH_OCRASUITE_MAXLEN)
 	return -1;
-      memcpy (ocra_suite, str, strlen (str) + 1);
+      strcpy (ocra_suite, str);
     }
   else
     return -1;
@@ -91,18 +91,19 @@ static const char *whitespace = " \t\r\n";
  * @usersfile: Path to the credential storage file.
  * @username: User for which mode shall be retrieved.
  * @algorithm: Output parameter to store OATH algorithm.
- * @ocra_suite: Output parameter to store OCRA suite, NULL for non-OCRA.
+ * @suite: Pointer to preallocate output parameter to store OCRA suite.
  *
- * Used by the PAM module to retrieve the algorithm of the user that tries to
- * login.
+ * Retrieve the algorithm of the user that tries to login.  The output
+ * @ocrasuite string must be pre-allocated and have room for at least
+ * %OATH_OCRASUITE_MAXLEN + 1 characters.
  *
  * Returns: %OATH_OK if @algorithm could be retrieved from @usersfile,
- * %OATH_UNKNOWN_USER if @username was not found in @usersfile.
+ *   %OATH_UNKNOWN_USER if @username was not found in @usersfile.
  **/
 int
 oath_retrieve_mode (const char *usersfile,
 		    const char *username,
-		    oath_alg_t * algorithm, char *ocra_suite)
+		    oath_alg_t * algorithm, char *suite)
 {
   FILE *infh;
   char *line = NULL;
@@ -122,7 +123,7 @@ oath_retrieve_mode (const char *usersfile,
 	continue;
 
       /* Read token type */
-      if (parse_type (p, algorithm, &digits, &totpstepsize, ocra_suite) != 0)
+      if (parse_type (p, algorithm, &digits, &totpstepsize, suite) != 0)
 	continue;
 
       /* Read username */
@@ -559,8 +560,7 @@ oath_authenticate_usersfile (const char *usersfile,
  * @otp: String with one-time password to authenticate.
  * @window: How many past/future OTPs to search.
  * @passwd: String with password, or NULL to disable password checking.
- * @challenges: Byte-array storing challenges value (max 128 bytes).
- * @challenges_length: Length of @challenges.
+ * @challenge: Byte-array with challenges value (max 128 bytes).
  * @last_otp: Output variable holding last successful authentication.
  *
  * Authenticate user named @username with the one-time password @otp

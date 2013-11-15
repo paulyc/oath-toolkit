@@ -534,7 +534,7 @@ extern OATHAPI int
 oath_retrieve_mode (const char *usersfile,
 		    const char *username,
 		    oath_alg_t *algorithm,
-		    char *ocrasuite);
+		    char *suite);
 
 
 

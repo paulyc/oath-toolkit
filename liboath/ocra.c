@@ -249,7 +249,7 @@ parse_ocrasuite (const char *ocrasuite, oath_ocrasuite_t * ocrasuite_info)
 
 /**
  * oath_ocrasuite_parse:
- * @ocrasuite_string: OCRASuite string to be parsed.
+ * @ocrasuite: OCRASuite string to be parsed.
  * @osh: Output pointer to OCRASuite handle.
  *
  * Parses the zero-terminated string @ocrasuite_string, storing the
