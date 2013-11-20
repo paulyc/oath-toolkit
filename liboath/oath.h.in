@@ -427,12 +427,11 @@ typedef enum
  * OATH_OCRASUITE_MAXLEN
  *
  * Length of longest possible OCRASuite string that the library
- * supports.  Currently it is of the form
+ * supports.  Currently the string have the form
  * "OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M" which is 47
  * characters not including the terminating NUL.
  */
-#define OATH_OCRASUITE_MAXLEN \
-  sizeof("OCRA-1:HOTP-SHA512-10:C-QA64-PSHA512-S512-T59M")
+#define OATH_OCRASUITE_MAXLEN 47
 
 /**
  * OATH_CHALLENGE_MAXLEN
@@ -460,7 +459,7 @@ extern OATHAPI bool
 oath_ocrasuite_get_counter (oath_ocrasuite_t *osh);
 
 extern OATHAPI oath_ocra_challenge_format_t
-oath_ocrasuite_get_challenge_type (oath_ocrasuite_t *osh);
+oath_ocrasuite_get_challenge_format (oath_ocrasuite_t *osh);
 
 extern OATHAPI size_t
 oath_ocrasuite_get_challenge_length (oath_ocrasuite_t *osh);

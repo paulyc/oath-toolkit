@@ -129,8 +129,8 @@ struct oath_ocrasuite_st
   /* Flag indicating whether a counter value is used as data input. */
   bool use_counter;
 
-  /* Defines challenge type, see %oath_ocra_challenge_format_t. */
-  oath_ocra_challenge_format_t challenge_type;
+  /* Defines challenge format, see %oath_ocra_challenge_format_t. */
+  oath_ocra_challenge_format_t challenge_format;
 
   /* Defines length of one challenge string. */
   size_t challenge_length;
@@ -212,8 +212,8 @@ parse_ocrasuite (const char *ocrasuite, oath_ocrasuite_t * ocrasuite_info)
   if (tmp[consumed] != '\0')
     return OATH_SUITE_PARSE_ERROR;
 
-  ocrasuite_info->challenge_type = map_challtype (f);
-  if ((int) ocrasuite_info->challenge_type == -1)
+  ocrasuite_info->challenge_format = map_challtype (f);
+  if ((int) ocrasuite_info->challenge_format == -1)
     return OATH_SUITE_PARSE_ERROR;
 
   if (xx < 4 || xx > 64)
@@ -350,7 +350,7 @@ oath_ocrasuite_get_counter (oath_ocrasuite_t * osh)
 }
 
 /**
- * oath_ocrasuite_get_challenge_type:
+ * oath_ocrasuite_get_challenge_format:
  * @osh: OCRASuite handle.
  *
  * Get the challenge format in the @osh OCRASuite.
@@ -361,9 +361,9 @@ oath_ocrasuite_get_counter (oath_ocrasuite_t * osh)
  * Since: 3.0.0
  **/
 oath_ocra_challenge_format_t
-oath_ocrasuite_get_challenge_type (oath_ocrasuite_t * osh)
+oath_ocrasuite_get_challenge_format (oath_ocrasuite_t * osh)
 {
-  return osh->challenge_type;
+  return osh->challenge_format;
 }
 
 /**
@@ -527,7 +527,7 @@ oath_ocra_challenge_generate_suitestr (const char *ocrasuite, char *challenge)
   if (rc != OATH_OK)
     return rc;
 
-  return oath_ocra_challenge_generate (os.challenge_type,
+  return oath_ocra_challenge_generate (os.challenge_format,
 				       os.challenge_length, challenge);
 }
 
@@ -690,10 +690,10 @@ map_cf (oath_ocra_cryptofunction_t cf)
  *
  * Generate a truncated hash-value used for challenge-response-based
  * authentication according to the OCRA algorithm described in RFC
- * 6287.  Besides the mandatory challenge(s), additional input is
- * optional, dictated by the OCRASuite value.
+ * 6287.  Besides the mandatory 128-byte @challenges, additional input
+ * is optional, but mandated by the OCRASuite value.
  *
- * The string @ocrasuite denotes which mode of OCRA is to be
+ * The @ocrasuite describes which mode of OCRA is to be
  * used. Furthermore it contains information about which of the
  * possible optional data inputs are to be used, and how.
  *
@@ -809,8 +809,8 @@ oath_ocra_generate (const char *secret,
  * @now: Current timestamp, optional (see @ocrasuite).
  * @ocra_value: OCRA value to validate against.
  *
- * Validates a given OCRA value by generating an OCRA value using the
- * given parameters and comparing the result.
+ * Validates a given OCRA value @ocra_value by generating an OCRA code
+ * using the given parameters and comparing the result.
  *
  * Returns: %OATH_OK (zero) on successful validation, if the OCRA
  *   value is incorrect %OATH_INVALID_OTP is returned, otherwise an

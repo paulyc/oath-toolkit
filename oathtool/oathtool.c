@@ -142,74 +142,80 @@ map_hash (oath_ocra_passwordhash_t hash)
     case OATH_OCRA_PH_SHA512:
       return "SHA512";
     default:
-      return "UNDEFINED";
+      return "none";
     }
 }
 
 static oath_ocra_challenge_format_t
-map_chall_t (char *chall_type_str) {
-	if(strcmp(chall_type_str,"num")==0)
-		return OATH_OCRA_CHALLENGE_NUM;
-	else if(strcmp(chall_type_str,"hex")==0)
-		return OATH_OCRA_CHALLENGE_HEX;
-	else if(strcmp(chall_type_str,"alphanum")==0)
-		return OATH_OCRA_CHALLENGE_ALPHANUM;
+map_chall_t (const char *chall_type_str)
+{
+  if (strcmp (chall_type_str, "num") == 0)
+    return OATH_OCRA_CHALLENGE_NUM;
+  else if (strcmp (chall_type_str, "hex") == 0)
+    return OATH_OCRA_CHALLENGE_HEX;
+  else if (strcmp (chall_type_str, "alphanum") == 0)
+    return OATH_OCRA_CHALLENGE_ALPHANUM;
+  else
+    return -1;
 }
 
 static void
-verbose_ocra (char *ocrasuite)
+verbose_ocra (const char *ocrasuite)
 {
   oath_ocrasuite_t *osh;
-  oath_ocra_challenge_format_t challenge_type;
+  oath_ocra_challenge_format_t challenge_format;
   int rc;
 
   rc = oath_ocrasuite_parse (ocrasuite, &osh);
-
   if (rc != OATH_OK)
     {
-      printf ("OCRASuite '%s' could not be parsed successfully (%d)\n",
-	      ocrasuite, rc);
+      printf ("error: parsing OCRASuite '%s': %s\n",
+	      ocrasuite, oath_strerror (rc));
       return;
     }
 
-  printf ("OCRAsuite '%s' contains the following specification:\n",
-	  ocrasuite);
-  printf ("\tCryptoFunction used: %s\n",
+  printf ("%s\n", ocrasuite);
+
+  printf ("CryptoFunction: %s\n",
 	  map_cf (oath_ocrasuite_get_cryptofunction (osh)));
-  printf ("\tHMAC truncated to %d digits\n",
+
+  printf ("CryptoFunction output length: %d\n",
 	  oath_ocrasuite_get_cryptofunction_digits (osh));
-  printf ("\tDatainput:\n");
-  switch (oath_ocrasuite_get_challenge_type (osh))
+
+  printf ("Challenge format: ");
+
+  switch (oath_ocrasuite_get_challenge_format (osh))
     {
     case OATH_OCRA_CHALLENGE_NUM:
-      printf ("\tnumerical challenges");
+      printf ("numerical\n");
       break;
-    case OATH_OCRA_CHALLENGE_HEX:
-      printf ("\thexadecimal challenges");
-      break;
-    case OATH_OCRA_CHALLENGE_ALPHANUM:
-      printf ("\talphanumeric challenges");
-    }
-  printf (" (max %d chars)\n", oath_ocrasuite_get_challenge_length (osh));
-  if (oath_ocrasuite_get_counter (osh))
-    printf ("\tcounter: yes\n");
-  else
-    printf ("\tcounter: no\n");
 
-  if (oath_ocrasuite_get_password_hash (osh) == OATH_OCRA_PH_NONE)
-    printf ("\tpassword hash: no\n");
-  else
-    printf ("\tpassword hash: %s\n",
-	    map_hash (oath_ocrasuite_get_password_hash (osh)));
+    case OATH_OCRA_CHALLENGE_HEX:
+      printf ("hexadecimal\n");
+      break;
+
+    case OATH_OCRA_CHALLENGE_ALPHANUM:
+      printf ("alphanumeric\n");
+    }
+
+  printf ("Challenge length: %d\n", oath_ocrasuite_get_challenge_length (osh));
+
+  printf ("Counter: %s\n", oath_ocrasuite_get_counter (osh) ? "yes" : "no");
+
+  printf ("Password hash: %s\n",
+	  map_hash (oath_ocrasuite_get_password_hash (osh)));
+
+  printf ("Session information: ");
   if (oath_ocrasuite_get_session_length (osh) == 0)
-    printf ("\tsession information: no\n");
+    printf ("no\n");
   else
-    printf ("\tsession information: %d bytes\n",
-	    oath_ocrasuite_get_session_length (osh));
+    printf ("%d bytes\n", oath_ocrasuite_get_session_length (osh));
+
+  printf ("timestamp: ");
   if (oath_ocrasuite_get_time_step (osh) == 0)
-    printf ("\ttimestamp: no\n");
+    printf ("no\n");
   else
-    printf ("\ttimestamp: yes, %llu seconds per time step\n",
+    printf ("yes, %llu seconds per time step\n",
 	    oath_ocrasuite_get_time_step (osh));
 }
 
@@ -231,7 +237,6 @@ main (int argc, char *argv[])
   char otp[11];
   time_t now, when, t0, time_step_size;
   oath_alg_t mode = OATH_ALGO_HOTP;
-
   size_t bin_length;
   char *phash_bin = NULL;
   oath_ocrasuite_t *osh;
@@ -287,53 +292,57 @@ main (int argc, char *argv[])
   if (args_info.ocra_flag)
     mode = OATH_ALGO_OCRA;
 
-  if (mode == OATH_ALGO_OCRA && args_info.generate_challenges_given)
+  if (args_info.suite_orig)
     {
-      if (args_info.inputs_num > 0 || args_info.challenge_given)
-	{
-	  error (EXIT_FAILURE, 0,
-		 "generating challenges does not require a secret key or existing challenges!");
-	}
-      if (args_info.suite_given && args_info.generate_type_given)
+      rc = oath_ocrasuite_parse (args_info.suite_orig, &osh);
+      if (rc != OATH_OK)
+	error (EXIT_FAILURE, 0, "failed to parse OCRAsuite");
+
+      if (args_info.verbose_flag)
+	verbose_ocra (args_info.suite_orig);
+    }
+
+  if (args_info.generate_challenges_given)
+    {
+      if (args_info.inputs_num > 0)
+	error (EXIT_FAILURE, 0, "superflous key supplied");
+
+      if (args_info.challenge_given)
+	error (EXIT_FAILURE, 0, "superflous challenge supplied");
+
+      if (args_info.suite_given && args_info.generate_format_given)
 	error (EXIT_FAILURE, 0,
-	       "either use --suite or --generate-type to specify challenge type to be generated!");
+	       "use --suite or --generate-format to specify format");
+
       if (args_info.suite_given)
 	{
-	  if (args_info.verbose_flag)
-	    verbose_ocra (args_info.suite_orig);
-	  rc = oath_ocrasuite_parse (args_info.suite_orig, &osh);
-	  if (rc != OATH_OK)
-	    error (EXIT_FAILURE, 0, "failed to parse OCRAsuite!");
-	  chall_type = oath_ocrasuite_get_challenge_type (osh);
+	  chall_type = oath_ocrasuite_get_challenge_format (osh);
 	  chall_length = oath_ocrasuite_get_challenge_length (osh);
 	}
       else
 	{
-	  if (strcmp (args_info.generate_type_arg, "num") == 0)
-	    chall_type = OATH_OCRA_CHALLENGE_NUM;
-	  else if (strcmp (args_info.generate_type_arg, "hex") == 0)
-	    chall_type = OATH_OCRA_CHALLENGE_HEX;
-	  else if (strcmp (args_info.generate_type_arg, "alphanum") == 0)
-	    chall_type = OATH_OCRA_CHALLENGE_HEX;
-	  else
-	    error (EXIT_FAILURE, 0,
-		   "valid --generate-type values are 'num','hex' and 'alphanum'.");
+	  chall_type = map_chall_t (args_info.generate_format_arg);
+	  if (chall_type == -1)
+	    error (EXIT_FAILURE, 0, "invalid --generate-type value");
 	  chall_length = args_info.generate_length_arg;
 	}
+
       challenge = malloc (chall_length + 1);
       if (challenge == NULL)
 	error (EXIT_FAILURE, 0, "failed to allocate memory for challenge");
-      while (args_info.generate_challenges_arg > 0)
+
+      for (; args_info.generate_challenges_arg > 0;
+	   args_info.generate_challenges_arg--)
 	{
-	  rc =
-	    oath_ocra_challenge_generate (chall_type, chall_length,
-					  challenge);
+	  rc = oath_ocra_challenge_generate (chall_type, chall_length,
+					     challenge);
 	  if (rc != OATH_OK)
 	    error (EXIT_FAILURE, 0, "failed to generate challenge");
 	  printf ("%s\n", challenge);
-	  args_info.generate_challenges_arg--;
 	}
+
       free (challenge);
+
       oath_done ();
       return EXIT_SUCCESS;
     }
@@ -536,8 +545,6 @@ main (int argc, char *argv[])
       if (!args_info.suite_given)
 	error (EXIT_FAILURE, 0,
 	       "ocra suite string is mandatory in OCRA mode");
-      if (args_info.verbose_flag)
-	verbose_ocra (args_info.suite_orig);
       if (args_info.phash_given)
 	{
 	  rc = oath_hex2bin (args_info.phash_arg, NULL, &bin_length);
@@ -560,24 +567,21 @@ main (int argc, char *argv[])
       when = parse_time (args_info.now_arg, now);
 
       if (args_info.challenge_given == 1
-	  && args_info.challenge_type_given == 0)
+	  && args_info.challenge_format_given == 0)
 	{
-	  rc = oath_ocrasuite_parse(args_info.suite_orig,&osh);
-	  if(rc!=OATH_OK)
-	    error(EXIT_FAILURE, 0, "could not parse OCRAsuite string");
-	  chall_type = oath_ocrasuite_get_challenge_type(osh);
+	  chall_type = oath_ocrasuite_get_challenge_format(osh);
 	  chall_type_p = &chall_type;
 	}
-      else if (args_info.challenge_given != args_info.challenge_type_given)
+      else if (args_info.challenge_given != args_info.challenge_format_given)
 	{
 	  error(EXIT_FAILURE, 0, "number of challenges and number of challenge types do not match");
 	}
       else
 	{
 	  size_t i;
-	  chall_type_p = malloc(sizeof(oath_ocra_challenge_format_t)*args_info.challenge_type_given);
-	  for(i=0;i<args_info.challenge_type_given;i++)
-	    *(chall_type_p+i)=map_chall_t(args_info.challenge_type_arg[i]);
+	  chall_type_p = malloc(sizeof(oath_ocra_challenge_format_t)*args_info.challenge_format_given);
+	  for(i=0;i<args_info.challenge_format_given;i++)
+	    *(chall_type_p+i)=map_chall_t(args_info.challenge_format_arg[i]);
 	}
 
       char Q[128];

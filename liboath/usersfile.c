@@ -295,12 +295,12 @@ parse_usersfile (const char *username,
 	      }
 	    else
 	      {
-		oath_ocra_challenge_format_t challenge_type;
+		oath_ocra_challenge_format_t challenge_format;
 		char Q[128];
 
-		challenge_type = oath_ocrasuite_get_challenge_type (os);
+		challenge_format = oath_ocrasuite_get_challenge_format (os);
 
-		rc = oath_ocra_challenge_convert (1, &challenge_type,
+		rc = oath_ocra_challenge_convert (1, &challenge_format,
 						  &challenge, Q);
 
 		rc = oath_ocra_validate (secret, secret_length,

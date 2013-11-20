@@ -226,8 +226,8 @@ liboath/man/oath_ocra_generate_raw.3
 liboath/man/oath_ocra_validate.3
 liboath/man/oath_ocra_validate_raw.3
 liboath/man/oath_ocrasuite_done.3
+liboath/man/oath_ocrasuite_get_challenge_format.3
 liboath/man/oath_ocrasuite_get_challenge_length.3
-liboath/man/oath_ocrasuite_get_challenge_type.3
 liboath/man/oath_ocrasuite_get_counter.3
 liboath/man/oath_ocrasuite_get_cryptofunction.3
 liboath/man/oath_ocrasuite_get_cryptofunction_digits.3

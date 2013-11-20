@@ -35,10 +35,10 @@ option "now" N "use this time as current time for OCRA" string typestr="TIME" de
 option "digits" d "number of digits in one-time password" int typestr="DIGITS" no
 
 section "OCRA"
-option "generate-challenges" g "generate NUM OCRA challenges" int optional argoptional typestr="NUM" default="1" dependon="ocra"
+option "generate-challenges" g "generate NUM OCRA challenges" int optional argoptional typestr="NUM" default="1"
 option "generate-length" - "length of generated challenges" int optional argoptional typestr="LEN" default="8" dependon="generate-challenges"
-option "generate-type" - "type of generated challenges" typestr="TYPE" values="num","hex","alphanum" dependon="generate-challenges" default="num" optional argoptional
-option "challenge-type" - "challenge type(s) for OCRA calculations" typestr="TYPE" values="num","hex","alphanum" optional argoptional default="num" multiple
+option "generate-format" - "format of generated challenges" typestr="TYPE" values="num","hex","alphanum" dependon="generate-challenges" default="num" optional argoptional
+option "challenge-format" - "challenge format for OCRA calculations" typestr="TYPE" values="num","hex","alphanum" optional argoptional default="num" multiple
 option "suite" o "string specifying the OCRASuite to use, e.g., OCRA-1:HOTP-SHA1-6:QN08" string typestr="SUITE" no
 option "session-info" i "hex encoded string representing session information for OCRA" string typestr="SESSION" no
 option "challenge" q "challenge question(s)" string typestr="CHALLENGE" no multiple
