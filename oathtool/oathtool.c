@@ -160,58 +160,35 @@ map_chall_t (const char *chall_type_str)
 }
 
 static void
-verbose_ocra (const char *ocrasuite)
+verbose_ocra (const char *ocrasuite, oath_ocrasuite_t *osh)
 {
-  oath_ocrasuite_t *osh;
-  oath_ocra_challenge_format_t challenge_format;
-  int rc;
-
-  rc = oath_ocrasuite_parse (ocrasuite, &osh);
-  if (rc != OATH_OK)
-    {
-      printf ("error: parsing OCRASuite '%s': %s\n",
-	      ocrasuite, oath_strerror (rc));
-      return;
-    }
-
-  printf ("%s\n", ocrasuite);
-
+  printf ("OCRA Suite: %s\n", ocrasuite);
   printf ("CryptoFunction: %s\n",
 	  map_cf (oath_ocrasuite_get_cryptofunction (osh)));
-
   printf ("CryptoFunction output length: %d\n",
 	  oath_ocrasuite_get_cryptofunction_digits (osh));
-
   printf ("Challenge format: ");
-
   switch (oath_ocrasuite_get_challenge_format (osh))
     {
     case OATH_OCRA_CHALLENGE_NUM:
       printf ("numerical\n");
       break;
-
     case OATH_OCRA_CHALLENGE_HEX:
       printf ("hexadecimal\n");
       break;
-
     case OATH_OCRA_CHALLENGE_ALPHANUM:
       printf ("alphanumeric\n");
     }
-
   printf ("Challenge length: %d\n", oath_ocrasuite_get_challenge_length (osh));
-
   printf ("Counter: %s\n", oath_ocrasuite_get_counter (osh) ? "yes" : "no");
-
   printf ("Password hash: %s\n",
 	  map_hash (oath_ocrasuite_get_password_hash (osh)));
-
   printf ("Session information: ");
   if (oath_ocrasuite_get_session_length (osh) == 0)
     printf ("no\n");
   else
     printf ("%d bytes\n", oath_ocrasuite_get_session_length (osh));
-
-  printf ("timestamp: ");
+  printf ("Timestamp: ");
   if (oath_ocrasuite_get_time_step (osh) == 0)
     printf ("no\n");
   else
@@ -245,6 +222,7 @@ main (int argc, char *argv[])
   char *challenge;
   size_t chall_length;
   int totpflags = 0;
+  int printed_ocrasuite_info = 0;
 
   set_program_name (argv[0]);
 
@@ -269,28 +247,10 @@ main (int argc, char *argv[])
       return EXIT_SUCCESS;
     }
 
-  if (args_info.help_given)
-    usage (EXIT_SUCCESS);
-
-  if (args_info.inputs_num == 0 && (!args_info.generate_challenges_given))
-    {
-      cmdline_parser_print_help ();
-      emit_bug_reporting_address ();
-      return EXIT_SUCCESS;
-    }
-
   rc = oath_init ();
   if (rc != OATH_OK)
     error (EXIT_FAILURE, 0, "liboath initialization failed: %s",
 	   oath_strerror (rc));
-
-  if (args_info.hotp_flag + args_info.totp_given + args_info.ocra_flag > 1)
-    error (EXIT_FAILURE, 0,
-	   "more than one mode set! use either --hotp, --totp or --ocra");
-  if (args_info.totp_given)
-    mode = OATH_ALGO_TOTP;
-  if (args_info.ocra_flag)
-    mode = OATH_ALGO_OCRA;
 
   if (args_info.suite_orig)
     {
@@ -299,8 +259,32 @@ main (int argc, char *argv[])
 	error (EXIT_FAILURE, 0, "failed to parse OCRAsuite");
 
       if (args_info.verbose_flag)
-	verbose_ocra (args_info.suite_orig);
+	{
+	  verbose_ocra (args_info.suite_orig, osh);
+	  printed_ocrasuite_info = 1;
+	}
     }
+
+  if (args_info.help_given)
+    usage (EXIT_SUCCESS);
+
+  if (args_info.inputs_num == 0 && (!args_info.generate_challenges_given))
+    {
+      if (!printed_ocrasuite_info)
+	{
+	  cmdline_parser_print_help ();
+	  emit_bug_reporting_address ();
+	}
+      return EXIT_SUCCESS;
+    }
+
+  if (args_info.hotp_flag + args_info.totp_given + args_info.ocra_flag > 1)
+    error (EXIT_FAILURE, 0,
+	   "more than one mode set! use either --hotp, --totp or --ocra");
+  if (args_info.totp_given)
+    mode = OATH_ALGO_TOTP;
+  if (args_info.ocra_flag)
+    mode = OATH_ALGO_OCRA;
 
   if (args_info.generate_challenges_given)
     {

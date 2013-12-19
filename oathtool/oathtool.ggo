@@ -24,25 +24,24 @@ section "General options"
 option "base32" b "use base32 encoding of KEY instead of hex" flag off
 option "verbose" v "explain what is being done" flag off
 option "window" w "window of counter values to test when validating HOTP/TOTP values" int typestr="WIDTH" no
+option "now" N "use this time as current time for TOTP/OCRA" string typestr="TIME" default="now" no
+option "counter" c "HOTP/OCRA counter value" longlong typestr="COUNTER" no
 
 section "HOTP"
-option "counter" c "HOTP/OCRA counter value" longlong typestr="COUNTER" no
 
 section "TOTP"
 option "time-step-size" s "TOTP time-step duration" string typestr="DURATION" default="30s" no
 option "start-time" S "when to start counting time steps for TOTP" string typestr="TIME" default="1970-01-01 00:00:00 UTC" no
-option "now" N "use this time as current time for OCRA" string typestr="TIME" default="now" no
 option "digits" d "number of digits in one-time password" int typestr="DIGITS" no
 
 section "OCRA"
 option "generate-challenges" g "generate NUM OCRA challenges" int optional argoptional typestr="NUM" default="1"
 option "generate-length" - "length of generated challenges" int optional argoptional typestr="LEN" default="8" dependon="generate-challenges"
 option "generate-format" - "format of generated challenges" typestr="TYPE" values="num","hex","alphanum" dependon="generate-challenges" default="num" optional argoptional
-option "challenge-format" - "challenge format for OCRA calculations" typestr="TYPE" values="num","hex","alphanum" optional argoptional default="num" multiple
 option "suite" o "string specifying the OCRASuite to use, e.g., OCRA-1:HOTP-SHA1-6:QN08" string typestr="SUITE" no
+option "challenge-binary" Q "prepared 128-byte challenge in hex" string typestr="HEXCHALLENGE" no
+option "challenge-format" - "challenge format of challenge given by --challenge.  May be given multiple times if you have more than one challenge." typestr="TYPE" values="num","hex","alphanum" optional argoptional default="num" multiple
+option "challenge" q "challenge question, type specified with --challenge-format. May be given multiple times if you have more than one challenge." string typestr="CHALLENGE" no multiple
 option "session-info" i "hex encoded string representing session information for OCRA" string typestr="SESSION" no
-option "challenge" q "challenge question(s)" string typestr="CHALLENGE" no multiple
 option "phash" p "string representing the password hash for OCRA" string typestr="HASH" no
 option "ocra-counter" C "OCRA counter value" longlong typestr="COUNTER" no
-option "ocra-now" n "use this time as current time for OCRA" string typestr="TIME" default="now" no
-
