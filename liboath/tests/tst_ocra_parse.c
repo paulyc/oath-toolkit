@@ -1,7 +1,7 @@
 /*
  * tst_ocra_parse.c - self-tests for liboath OCRASuite parser functions
+ * Copyright (C) 2013-2014 Simon Josefsson
  * Copyright (C) 2013 Fabian Grünbichler
- * Copyright (C) 2013 Simon Josefsson
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -33,7 +33,7 @@ const struct
   oath_ocra_cryptofunction_t ocra_cf;
   uint8_t digits;
   bool counter;
-  oath_ocra_challenge_format_t challenge_type;
+  oath_ocra_challenge_format_t challenge_format;
   uint8_t challenge_length;
   oath_ocra_passwordhash_t password_hash;
   uint16_t session_length;
@@ -96,7 +96,7 @@ main (void)
       int digits;
       bool counter;
       oath_ocra_passwordhash_t password_hash;
-      oath_ocra_challenge_format_t challenge_type;
+      oath_ocra_challenge_format_t challenge_format;
       size_t challenge_length;
       unsigned time_step;
       size_t session_length;
@@ -135,11 +135,11 @@ main (void)
 	  return 1;
 	}
 
-      challenge_type = oath_ocrasuite_get_challenge_type (osi);
-      if (challenge_type != tv[i].challenge_type)
+      challenge_format = oath_ocrasuite_get_challenge_format (osi);
+      if (challenge_format != tv[i].challenge_format)
 	{
-	  printf ("challenge_type mismatch for testcase #%d: %d vs %d\n", i,
-		  challenge_type, tv[i].challenge_type);
+	  printf ("challenge_format mismatch for testcase #%d: %d vs %d\n", i,
+		  challenge_format, tv[i].challenge_format);
 	  return 1;
 	}
 
