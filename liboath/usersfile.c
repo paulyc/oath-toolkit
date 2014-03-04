@@ -1,6 +1,6 @@
 /*
  * usersfile.c - implementation of UsersFile based HOTP validation
- * Copyright (C) 2009-2013 Simon Josefsson
+ * Copyright (C) 2009-2014 Simon Josefsson
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -356,27 +356,25 @@ update_usersfile2 (const char *username,
       char *origline;
       const char *user, *type, *passwd, *secret;
       int r;
+      oath_alg_t alg;
+      unsigned digits, totpstepsize;
+      char suite[44];
 
       origline = strdup (*lineptr);
 
       type = strtok_r (*lineptr, whitespace, &saveptr);
       if (type == NULL)
-	{
-	  free (origline);
-	  continue;
-	}
+	goto skip_line;
+
+      /* Read token type */
+      if (parse_type (type, &alg, &digits, &totpstepsize, suite) != 0)
+	goto skip_line;
 
       /* Read username */
       user = strtok_r (NULL, whitespace, &saveptr);
       if (user == NULL || strcmp (user, username) != 0
 	  || got_users++ != skipped_users)
-	{
-	  r = fprintf (outfh, "%s", origline);
-	  free (origline);
-	  if (r <= 0)
-	    return OATH_PRINTF_ERROR;
-	  continue;
-	}
+	goto skip_line;
 
       passwd = strtok_r (NULL, whitespace, &saveptr);
       if (passwd == NULL)
@@ -392,6 +390,14 @@ update_usersfile2 (const char *username,
       free (origline);
       if (r <= 0)
 	return OATH_PRINTF_ERROR;
+      continue;
+
+    skip_line:
+      r = fprintf (outfh, "%s", origline);
+      free (origline);
+      if (r <= 0)
+	return OATH_PRINTF_ERROR;
+      continue;
     }
 
   return OATH_OK;
