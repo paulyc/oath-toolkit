@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2015 Free Software Foundation, Inc.
+# Copyright (C) 2002-2016 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,11 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_ES$])dnl a valid locale name
   m4_pattern_allow([^gl_LIBOBJS$])dnl a variable
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
+
+  # Pre-early section.
+  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   AC_REQUIRE([gl_PROG_AR_RANLIB])
+
   # Code from module absolute-header:
   # Code from module alloca-opt:
   # Code from module alloca-opt-tests:
@@ -72,8 +76,11 @@ AC_DEFUN([gl_EARLY],
   # Code from module crypto/sha1-tests:
   # Code from module crypto/sha256:
   # Code from module crypto/sha512:
+  # Code from module ctype:
+  # Code from module ctype-tests:
   # Code from module dirent:
   # Code from module dirent-tests:
+  # Code from module dirfd:
   # Code from module dirname-lgpl:
   # Code from module dosname:
   # Code from module double-slash-root:
@@ -82,7 +89,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module errno:
   # Code from module errno-tests:
   # Code from module extensions:
-  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   # Code from module extern-inline:
   # Code from module fclose:
   # Code from module fclose-tests:
@@ -170,7 +176,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module readdir:
   # Code from module readlink:
   # Code from module readlink-tests:
-  # Code from module realloc-posix:
   # Code from module rename:
   # Code from module rename-tests:
   # Code from module rmdir:
@@ -394,11 +399,11 @@ AC_DEFUN([gl_INIT],
   fi
   gl_STRING_MODULE_INDICATOR([memchr])
   gl_MEMXOR
-  gl_MSVC_INVAL
+  AC_REQUIRE([gl_MSVC_INVAL])
   if test $HAVE_MSVC_INVALID_PARAMETER_HANDLER = 1; then
     AC_LIBOBJ([msvc-inval])
   fi
-  gl_MSVC_NOTHROW
+  AC_REQUIRE([gl_MSVC_NOTHROW])
   if test $HAVE_MSVC_INVALID_PARAMETER_HANDLER = 1; then
     AC_LIBOBJ([msvc-nothrow])
   fi
@@ -410,11 +415,6 @@ AC_DEFUN([gl_INIT],
     gl_PREREQ_READLINK
   fi
   gl_UNISTD_MODULE_INDICATOR([readlink])
-  gl_FUNC_REALLOC_POSIX
-  if test $REPLACE_REALLOC = 1; then
-    AC_LIBOBJ([realloc])
-  fi
-  gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_FUNC_RENAME
   if test $REPLACE_RENAME = 1; then
     AC_LIBOBJ([rename])
@@ -529,7 +529,15 @@ changequote([, ])dnl
     AC_LIBOBJ([closedir])
   fi
   gl_DIRENT_MODULE_INDICATOR([closedir])
+  gl_CTYPE_H
   gl_DIRENT_H
+  gl_FUNC_DIRFD
+  if test $ac_cv_func_dirfd = no && test $gl_cv_func_dirfd_macro = no \
+     || test $REPLACE_DIRFD = 1; then
+    AC_LIBOBJ([dirfd])
+    gl_PREREQ_DIRFD
+  fi
+  gl_DIRENT_MODULE_INDICATOR([dirfd])
   gl_ENVIRON
   gl_UNISTD_MODULE_INDICATOR([environ])
   gl_FCNTL_H
@@ -755,7 +763,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/printf-parse.c
   lib/printf-parse.h
   lib/readlink.c
-  lib/realloc.c
   lib/rename.c
   lib/rmdir.c
   lib/same-inode.h
@@ -802,7 +809,9 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/canonicalize.m4
   m4/close.m4
   m4/closedir.m4
+  m4/ctype.m4
   m4/dirent_h.m4
+  m4/dirfd.m4
   m4/dirname.m4
   m4/double-slash-root.m4
   m4/eealloc.m4
@@ -871,7 +880,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/putenv.m4
   m4/readdir.m4
   m4/readlink.m4
-  m4/realloc.m4
   m4/rename.m4
   m4/rmdir.m4
   m4/setenv.m4
@@ -923,6 +931,7 @@ AC_DEFUN([gl_FILE_LIST], [
   tests/test-canonicalize-lgpl.c
   tests/test-chdir.c
   tests/test-close.c
+  tests/test-ctype.c
   tests/test-dirent.c
   tests/test-environ.c
   tests/test-errno.c
@@ -1025,8 +1034,10 @@ AC_DEFUN([gl_FILE_LIST], [
   tests=lib/binary-io.c
   tests=lib/binary-io.h
   tests=lib/closedir.c
+  tests=lib/ctype.in.h
   tests=lib/dirent-private.h
   tests=lib/dirent.in.h
+  tests=lib/dirfd.c
   tests=lib/fcntl.in.h
   tests=lib/fdopen.c
   tests=lib/filename.h

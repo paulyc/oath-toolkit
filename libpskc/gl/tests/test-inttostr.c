@@ -1,5 +1,5 @@
 /* Test inttostr functions, and incidentally, INT_BUFSIZE_BOUND
-   Copyright (C) 2010-2015 Free Software Foundation, Inc.
+   Copyright (C) 2010-2016 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -84,9 +84,11 @@ main (void)
       CK (off_t,        offtostr);
       CK (uintmax_t,    umaxtostr);
       CK (intmax_t,     imaxtostr);
+      free (b);
       return 0;
     }
 
   /* snprintf doesn't accept %ju; skip this test.  */
+  free (b);
   return 77;
 }
