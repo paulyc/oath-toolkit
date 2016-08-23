@@ -13,6 +13,7 @@ Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache/
+build-aux/ar-lib
 build-aux/compile
 build-aux/config.guess
 build-aux/config.sub
@@ -61,6 +62,7 @@ liboath/gl/sys/
 liboath/gl/tests/.deps/
 liboath/gl/tests/arg-nonnull.h
 liboath/gl/tests/c++defs.h
+liboath/gl/tests/ctype.h
 liboath/gl/tests/dirent.h
 liboath/gl/tests/fcntl.h
 liboath/gl/tests/inttypes.h
@@ -529,6 +531,7 @@ oathtool/gl/sys/
 oathtool/gl/tests/.deps/
 oathtool/gl/tests/arg-nonnull.h
 oathtool/gl/tests/c++defs.h
+oathtool/gl/tests/ctype.h
 oathtool/gl/tests/inttypes.h
 oathtool/gl/tests/libtests.a
 oathtool/gl/tests/test-alloca-opt
