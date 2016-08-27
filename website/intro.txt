@@ -32,6 +32,10 @@ The components included in the package is:
 
 For further information, see the link:docs.html[Documentation page].
 
+
+License
+-------
+
 OATH Toolkit is free software and is licenced under the terms of the
 'LGPLv2+' (libraries) and 'GPLv3+' (tools).
 
@@ -41,20 +45,23 @@ External Resources and Applications
 Here are resources that I know of, if you know of more drop me a line
 and I'll add them to the list.
 
-- http://www.openauthentication.org/[Initiative for Open
+- https://www.openauthentication.org/[Initiative for Open
   Authentication (OATH)] is the umbrella organization that published
   the HOTP/TOTP/PSKC technology.
-- The http://www.openauthentication.org/specifications[OATH
+- The https://openauthentication.org/specifications-technical-resources/[OATH
   Specifications] page for list of published documents.
 - http://code.google.com/p/google-authenticator/[Google Authenticator]
-  is an implementation for several mobile platforms.
+  is/was a free implementation for several mobile platforms.
+- The https://developers.yubico.com/yubioath-desktop/[Yubico
+  Authenticator Desktop] is a free client-side implementation storing
+  secrets on external hardware.
 - Daniel Pocock maintains http://www.dynalogin.org/[Dynalogin] which
   is an Open Source two factor authentication suite.
-- http://tools.ietf.org/html/rfc4226[RFC 4226 on HOTP: An HMAC-Based One-Time
+- https://tools.ietf.org/html/rfc4226[RFC 4226 on HOTP: An HMAC-Based One-Time
   Password Algorithm].
-- http://tools.ietf.org/html/rfc6238[RFC 6238 on TOTP: Time-Based
+- https://tools.ietf.org/html/rfc6238[RFC 6238 on TOTP: Time-Based
   One-Time Password Algorithm].
-- http://tools.ietf.org/html/rfc6030[RFC 6030 on Portable Symmetric
+- https://tools.ietf.org/html/rfc6030[RFC 6030 on Portable Symmetric
   Key Container (PSKC)].
 - https://github.com/malept/pyoath-toolkit[Python bindings for OATH
   Toolkit].
