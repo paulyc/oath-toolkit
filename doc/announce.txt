@@ -1,10 +1,9 @@
 To: oath-toolkit-help@nongnu.org
-Subject: OATH Toolkit 2.6.1
+Subject: OATH Toolkit 2.6.2
 <#part sign=pgpmime>
-Small build fix for 32-bit systems.
-
-** liboath: Fix 'make check' on 32-bit systems.
-Report and patch by Christian Hesse.
+I'm practicing the release process.  The only change except gnulib fixes
+since the last release is that version controlled source code repository
+moved to GitLab.
 
 Happy hacking,
 Simon
@@ -53,8 +52,8 @@ are invited to join our oath-toolkit-help mailing list, see:
   https://lists.nongnu.org/mailman/listinfo/oath-toolkit-help
 
 Here are the compressed sources of the entire package:
-  http://download.savannah.nongnu.org/releases/oath-toolkit/oath-toolkit-2.6.1.tar.gz (4.1MB)
-  http://download.savannah.nongnu.org/releases/oath-toolkit/oath-toolkit-2.6.1.tar.gz.sig (OpenPGP)
+  http://download.savannah.nongnu.org/releases/oath-toolkit/oath-toolkit-2.6.2.tar.gz (4.1MB)
+  http://download.savannah.nongnu.org/releases/oath-toolkit/oath-toolkit-2.6.2.tar.gz.sig (OpenPGP)
 
 The software is cryptographically signed by the author using an OpenPGP
 key identified by the following information:
@@ -66,16 +65,19 @@ uid                  Simon Josefsson <simon@josefsson.org>
 The key is available from:
   http://josefsson.org/54265e8c.txt
 
-I have changed key since the last release, see my transition statement:
+I have changed key since older releases, see my transition statement:
   http://blog.josefsson.org/2014/06/23/openpgp-key-transition-statement/
 
 Here are the SHA-1 and SHA-224 checksums:
 
-62f49bdf9179c127182923afaf3549e826a2eebf  oath-toolkit-2.6.1.tar.gz
-725643a9c29ba176da8228fdd4f03fd9e98b4aad41ce3ccbc77275b3  oath-toolkit-2.6.1.tar.gz
+2cb5252edd3a8e07425bc88d1641ca2b3db9ebc8  oath-toolkit-2.6.2.tar.gz
+64660926d5ac02b23a15106e2cbea4654590b208edb626cff7f2cedf  oath-toolkit-2.6.2.tar.gz
 
 General information on contributing:
   http://www.nongnu.org/oath-toolkit/contrib.html
+
+GitLab's page:
+  https://gitlab.com/oath-toolkit/oath-toolkit
 
 Savannah developer's home page:
   https://savannah.nongnu.org/projects/oath-toolkit/
@@ -85,3 +87,4 @@ Code coverage charts:
 
 Clang code analysis:
   http://www.nongnu.org/oath-toolkit/clang-analyzer/
+
