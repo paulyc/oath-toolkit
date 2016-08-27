@@ -2,7 +2,7 @@ Copyright (C) 2009-2016 Simon Josefsson.  Licensed under the GPLv3+.
 
 .Download, build and self-check version controlled sources:
 ----
-$ git clone git://git.savannah.nongnu.org/oath-toolkit.git
+$ git clone https://gitlab.com/oath-toolkit/oath-toolkit.git
 $ cd oath-toolkit
 $ make
 $ make check
@@ -13,19 +13,19 @@ project:
 
 * Mailing list: http://lists.nongnu.org/mailman/listinfo/oath-toolkit-help
 
-* Savannah OATH Toolkit Project page: https://savannah.nongnu.org/projects/oath-toolkit/
+* Savannah OATH Toolkit Project: https://savannah.nongnu.org/projects/oath-toolkit/
 
-* Bug tracker: https://savannah.nongnu.org/support/?group=oath-toolkit
+* GitLab OATH Toolkit Project: https://gitlab.com/oath-toolkit/oath-toolkit
 
-* Code browser: http://git.savannah.gnu.org/cgit/oath-toolkit.git/tree
+* Bug tracker: https://gitlab.com/oath-toolkit/oath-toolkit/issues
+
+* Code browser: https://gitlab.com/oath-toolkit/oath-toolkit/tree/master
 
 * Code coverage report: http://www.nongnu.org/oath-toolkit/coverage/
 
 * Clang code analysis: http://www.nongnu.org/oath-toolkit/clang-analyzer/
 
-* Daily snapshot: http://daily.josefsson.org/oath-toolkit/
-
-* Build bot status: http://autobuild.josefsson.org/oath-toolkit/
+* Old bug tracker: https://savannah.nongnu.org/support/?group=oath-toolkit
 
 Several tools are required to build the software, including:
 
