@@ -49,7 +49,8 @@ the instructions for installing them differ.  Here are some hints:
 
 .gNewSense/Debian/Ubuntu dependencies:
 -----
-apt-get install make git autoconf automake libtool bison libxmlsec1-dev
+apt-get install make git autoconf automake libtool bison
+apt-get install libxmlsec1-dev libxml2-utils
 apt-get install help2man gtk-doc-tools valgrind gengetopt
 -----
 
