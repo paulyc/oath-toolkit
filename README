@@ -35,16 +35,17 @@ install the software.
 The file HACKING contains information that is useful if you are
 building for version controlled sources.
 
-For updates on the project please visit our web page:
+For updates on the project please visit our web sites:
 
+  http://www.nongnu.org/oath-toolkit/
   https://savannah.nongnu.org/projects/oath-toolkit/
-  http://gitorious.org/oath-toolkit
+  https://gitlab.com/oath-toolkit/oath-toolkit
 
 For e-mail discussions related the OATH Toolkit, please send e-mail to
 oath-toolkit-help@nongnu.org after subscribing to the mailing list
 through this web page:
 
-  http://lists.nongnu.org/mailman/listinfo/oath-toolkit-help
+  https://lists.nongnu.org/mailman/listinfo/oath-toolkit-help
 
 Note that the OATH Toolkit project used to be called "HOTP Toolkit",
 and there are still references to the old project name elsewhere.
