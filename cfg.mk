@@ -72,20 +72,14 @@ coverage-my:
 	$(MAKE) coverage WERROR_CFLAGS= VALGRIND=
 
 coverage-copy:
-	rm -fv `find $(htmldir)/coverage -type f | grep -v CVS`
+	rm -fv `find $(htmldir)/coverage -type f`
 	mkdir -p $(htmldir)/coverage/
 	cp -rv $(COVERAGE_OUT)/* $(htmldir)/coverage/
 
 coverage-upload:
 	cd $(htmldir) && \
-	find coverage -type d -! -name CVS -! -name '.' \
-		-exec cvs add {} \; && \
-	find coverage -type d -! -name CVS -! -name '.' \
-		-exec sh -c "cvs add -kb {}/*.png" \; && \
-	find coverage -type d -! -name CVS -! -name '.' \
-		-exec sh -c "cvs add {}/*.html" \; && \
-	cvs add coverage/$(PACKAGE).info coverage/gcov.css || true && \
-	cvs commit -m "Update." coverage
+	git add --all coverage && \
+	git commit -m "Auto-update code-coverage." coverage
 
 clang:
 	make clean
@@ -94,16 +88,14 @@ clang:
 	scan-build -o scan.tmp make
 
 clang-copy:
-	rm -fv `find $(htmldir)/clang-analyzer -type f | grep -v CVS`
+	rm -fv `find $(htmldir)/clang-analyzer -type f`
 	mkdir -p $(htmldir)/clang-analyzer/
 	cp -rv scan.tmp/*/* $(htmldir)/clang-analyzer/
 
 clang-upload:
 	cd $(htmldir) && \
-		cvs add clang-analyzer || true && \
-		cvs add clang-analyzer/*.css clang-analyzer/*.js \
-			clang-analyzer/*.html || true && \
-		cvs commit -m "Update." clang-analyzer
+		git add --all clang-analyzer && \
+		git commit -m "Auto-update clang-analyzer." clang-analyzer
 
 ChangeLog:
 	git2cl > ChangeLog
@@ -131,24 +123,18 @@ gtkdoc-copy:
 
 gtkdoc-upload:
 	cd $(htmldir) && \
-		cvs add reference || true && \
-		cvs add -kb reference/*.png reference/*.pdf || true && \
-		cvs add reference/*.html reference/*.css \
-			reference/*.devhelp2 || true && \
-		cvs commit -m "Update." reference/
+		git add --all reference && \
+		git commit -m "Auto-update GTK-DOC liboath." reference/
 	cd $(htmldir) && \
-		cvs add libpskc || true && \
-		cvs add -kb libpskc/*.png libpskc/*.pdf || true && \
-		cvs add libpskc/*.html libpskc/*.css \
-			libpskc/*.devhelp2 || true && \
-		cvs commit -m "Update." libpskc/
+		git add --all libpskc && \
+		git commit -m "Auto-update GTK-DOC libpskc." libpskc/
 
 man-copy:
 	groff -man -T html oathtool/oathtool.1  > $(htmldir)/man-oathtool.html
 
 man-upload:
 	cd $(htmldir) && \
-		cvs commit -m "Update." man-oathtool.html
+		git commit -m "Auto-update man-oathtool.html." man-oathtool.html
 
 .PHONY: website
 website:
@@ -164,14 +150,11 @@ website-copy:
 
 website-upload:
 	cd $(htmldir) && \
-		cvs add *.html *.css || true && \
-		cvs add liboath-api || true && \
-		cvs add libpskc-api || true && \
-		cvs add -kb liboath-api/*.png liboath-api/*.png || true && \
-		cvs add -kb libpskc-api/*.png libpskc-api/*.png || true && \
-		cvs add liboath-api/*.html || true && \
-		cvs add libpskc-api/*.html || true && \
-		cvs commit -m "Update."
+		git add --all *.html *.css && \
+		git add --all liboath-api && \
+		git add --all libpskc-api && \
+		git commit -m "Auto-update." \
+		git push
 
 release-check: syntax-check tarball man-copy gtkdoc-copy coverage-my coverage-copy clang clang-copy website website-copy
 
@@ -180,6 +163,7 @@ release-upload-www: man-upload gtkdoc-upload coverage-upload clang-upload websit
 release-upload-ftp:
 	gpg -b $(distdir).tar.gz
 	gpg --verify $(distdir).tar.gz.sig
+	mkdir -p ../releases/$(PACKAGE)/
 	cp $(distdir).tar.gz $(distdir).tar.gz.sig ../releases/$(PACKAGE)/
 	scp $(distdir).tar.gz $(distdir).tar.gz.sig jas@dl.sv.nongnu.org:/releases/oath-toolkit/
 	git push
