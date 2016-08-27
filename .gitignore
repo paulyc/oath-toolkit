@@ -74,6 +74,7 @@ liboath/gl/tests/test-c-ctype
 liboath/gl/tests/test-canonicalize-lgpl
 liboath/gl/tests/test-chdir
 liboath/gl/tests/test-close
+liboath/gl/tests/test-ctype
 liboath/gl/tests/test-dirent
 liboath/gl/tests/test-environ
 liboath/gl/tests/test-errno
@@ -305,6 +306,7 @@ libpskc/gl/tests/test-inttostr
 libpskc/gl/tests/test-inttypes
 libpskc/gl/tests/test-memchr
 libpskc/gl/tests/test-snprintf
+libpskc/gl/tests/test-stdalign
 libpskc/gl/tests/test-stdbool
 libpskc/gl/tests/test-stddef
 libpskc/gl/tests/test-stdint
@@ -536,6 +538,7 @@ oathtool/gl/tests/inttypes.h
 oathtool/gl/tests/libtests.a
 oathtool/gl/tests/test-alloca-opt
 oathtool/gl/tests/test-c-ctype
+oathtool/gl/tests/test-ctype
 oathtool/gl/tests/test-environ
 oathtool/gl/tests/test-errno
 oathtool/gl/tests/test-fdopen
@@ -552,16 +555,19 @@ oathtool/gl/tests/test-memchr
 oathtool/gl/tests/test-parse-datetime
 oathtool/gl/tests/test-parse-duration
 oathtool/gl/tests/test-setenv
+oathtool/gl/tests/test-stdalign
 oathtool/gl/tests/test-stdbool
 oathtool/gl/tests/test-stddef
 oathtool/gl/tests/test-stdint
 oathtool/gl/tests/test-stdio
 oathtool/gl/tests/test-stdlib
 oathtool/gl/tests/test-strerror
+oathtool/gl/tests/test-strftime
 oathtool/gl/tests/test-string
 oathtool/gl/tests/test-sys_time
 oathtool/gl/tests/test-sys_types
 oathtool/gl/tests/test-time
+oathtool/gl/tests/test-timespec
 oathtool/gl/tests/test-unistd
 oathtool/gl/tests/test-unsetenv
 oathtool/gl/tests/test-vasnprintf
@@ -678,10 +684,12 @@ pskctool/gl/tests/test-ftello
 pskctool/gl/tests/test-ftello3
 pskctool/gl/tests/test-ftello4
 pskctool/gl/tests/test-fwrite
+pskctool/gl/tests/test-gettimeofday
 pskctool/gl/tests/test-intprops
 pskctool/gl/tests/test-inttypes
 pskctool/gl/tests/test-lseek
 pskctool/gl/tests/test-read-file
+pskctool/gl/tests/test-stdalign
 pskctool/gl/tests/test-stdbool
 pskctool/gl/tests/test-stddef
 pskctool/gl/tests/test-stdint
@@ -690,6 +698,7 @@ pskctool/gl/tests/test-stdlib
 pskctool/gl/tests/test-strerror
 pskctool/gl/tests/test-string
 pskctool/gl/tests/test-sys_stat
+pskctool/gl/tests/test-sys_time
 pskctool/gl/tests/test-sys_types
 pskctool/gl/tests/test-time
 pskctool/gl/tests/test-unistd
