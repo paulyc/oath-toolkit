@@ -1,6 +1,6 @@
 GNU/Linux build:
   before_script:
-    - apt-get update -qq && apt-get install -y -qq make git autoconf automake libtool bison libxmlsec1-dev libxml2-utils help2man gtk-doc-tools valgrind gengetopt
+    - apt-get update -qq && apt-get install -y -qq make git autoconf automake libtool bison libpam0g-dev libxmlsec1-dev libxml2-utils help2man gtk-doc-tools valgrind gengetopt
   script:
   - make && make check
   tags:
