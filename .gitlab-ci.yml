@@ -3,8 +3,3 @@ GNU/Linux build:
   - make && make check
   tags:
   - linux
-FreeBSD build:
-  script:
-  - make && make check
-  tags:
-  - freebsd
