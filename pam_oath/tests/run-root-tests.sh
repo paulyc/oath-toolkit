@@ -54,14 +54,15 @@ fi
 
 TSTAMP=`datefudge "2006-09-23" date -u +%s`
 if test "$TSTAMP" != "1158962400"; then
-    echo "Cannot fake timestamps, please install datefudge to check better."
-    ./test-pam_oath-root
+    echo "Cannot fake timestamp, install datefudge to check better. ($TSTAMP)"
+    ./test-pam_oath-root user3
     rc=$?
 else
     datefudge 2006-12-07 ./test-pam_oath-root user3
     rc=$?
-    diff -ur $srcdir/expect.oath $ETCUSRCFG || rc=1
 fi
+
+diff -u $srcdir/expect.oath $ETCUSRCFG || rc=1
 
 rm -f $ETCPAMCFG $ETCUSRCFG
 
