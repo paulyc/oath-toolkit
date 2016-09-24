@@ -150,6 +150,8 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AC_SYS_LARGEFILE])
   # Code from module lib-symbol-versions:
   # Code from module lib-symbol-visibility:
+  # Code from module limits-h:
+  # Code from module limits-h-tests:
   # Code from module link:
   # Code from module link-tests:
   # Code from module lseek:
@@ -375,6 +377,7 @@ AC_DEFUN([gl_INIT],
   AC_REQUIRE([gl_LARGEFILE])
   gl_LD_VERSION_SCRIPT
   gl_VISIBILITY
+  gl_LIMITS_H
   gl_FUNC_LSEEK
   if test $REPLACE_LSEEK = 1; then
     AC_LIBOBJ([lseek])
@@ -743,6 +746,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/hmac-sha512.c
   lib/hmac.h
   lib/itold.c
+  lib/limits.in.h
   lib/lseek.c
   lib/lstat.c
   lib/malloc.c
@@ -856,6 +860,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lib-ld.m4
   m4/lib-link.m4
   m4/lib-prefix.m4
+  m4/limits-h.m4
   m4/link.m4
   m4/longlong.m4
   m4/lseek.m4
@@ -986,6 +991,7 @@ AC_DEFUN([gl_FILE_LIST], [
   tests/test-init.sh
   tests/test-intprops.c
   tests/test-inttypes.c
+  tests/test-limits-h.c
   tests/test-link.c
   tests/test-link.h
   tests/test-lseek.c

@@ -200,6 +200,16 @@ EXTRA_DIST += test-fwrite.c signature.h macros.h
 
 ## end   gnulib module fwrite-tests
 
+## begin gnulib module getprogname-tests
+
+DEFS += -DEXEEXT=\"@EXEEXT@\"
+TESTS += test-getprogname
+check_PROGRAMS += test-getprogname
+test_getprogname_LDADD = $(LDADD)
+EXTRA_DIST += test-getprogname.c
+
+## end   gnulib module getprogname-tests
+
 ## begin gnulib module gettimeofday-tests
 
 TESTS += test-gettimeofday
@@ -269,6 +279,14 @@ check_PROGRAMS += test-inttypes
 EXTRA_DIST += test-inttypes.c
 
 ## end   gnulib module inttypes-tests
+
+## begin gnulib module limits-h-tests
+
+TESTS += test-limits-h
+check_PROGRAMS += test-limits-h
+EXTRA_DIST += test-limits-h.c
+
+## end   gnulib module limits-h-tests
 
 ## begin gnulib module lseek-tests
 
@@ -397,29 +415,6 @@ check_PROGRAMS += test-stdalign
 EXTRA_DIST += test-stdalign.c macros.h
 
 ## end   gnulib module stdalign-tests
-
-## begin gnulib module stdbool
-
-BUILT_SOURCES += $(STDBOOL_H)
-
-# We need the following in order to create <stdbool.h> when the system
-# doesn't have one that works.
-if GL_GENERATE_STDBOOL_H
-stdbool.h: stdbool.in.h $(top_builddir)/config.status
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */'; \
-	  sed -e 's/@''HAVE__BOOL''@/$(HAVE__BOOL)/g' < $(srcdir)/stdbool.in.h; \
-	} > $@-t && \
-	mv $@-t $@
-else
-stdbool.h: $(top_builddir)/config.status
-	rm -f $@
-endif
-MOSTLYCLEANFILES += stdbool.h stdbool.h-t
-
-EXTRA_DIST += stdbool.in.h
-
-## end   gnulib module stdbool
 
 ## begin gnulib module stdbool-tests
 

@@ -45,6 +45,9 @@ AC_DEFUN([gl_EARLY],
   # Code from module absolute-header:
   # Code from module binary-io:
   # Code from module binary-io-tests:
+  # Code from module dirname-lgpl:
+  # Code from module dosname:
+  # Code from module double-slash-root:
   # Code from module errno:
   # Code from module errno-tests:
   # Code from module error:
@@ -65,6 +68,8 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AC_FUNC_FSEEKO])
   # Code from module ftello-tests:
   # Code from module fwrite-tests:
+  # Code from module getprogname:
+  # Code from module getprogname-tests:
   # Code from module gettext-h:
   # Code from module gettimeofday:
   # Code from module gettimeofday-tests:
@@ -76,6 +81,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module inttypes-tests:
   # Code from module largefile:
   AC_REQUIRE([AC_SYS_LARGEFILE])
+  # Code from module limits-h:
+  # Code from module limits-h-tests:
   # Code from module lseek:
   # Code from module lseek-tests:
   # Code from module malloc-posix:
@@ -149,6 +156,8 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='gl'
+  gl_DIRNAME_LGPL
+  gl_DOUBLE_SLASH_ROOT
   gl_HEADER_ERRNO_H
   gl_ERROR
   if test $ac_cv_lib_error_at_line = no; then
@@ -176,6 +185,11 @@ AC_DEFUN([gl_INIT],
     gl_PREREQ_FTELLO
   fi
   gl_STDIO_MODULE_INDICATOR([ftello])
+  gl_FUNC_GETPROGNAME
+  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+  AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
+  AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
+  AC_CHECK_DECLS([__argv], [], [], [#include <stdlib.h>])
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   gl_FUNC_GETTIMEOFDAY
@@ -185,6 +199,7 @@ AC_DEFUN([gl_INIT],
   fi
   gl_SYS_TIME_MODULE_INDICATOR([gettimeofday])
   AC_REQUIRE([gl_LARGEFILE])
+  gl_LIMITS_H
   gl_FUNC_LSEEK
   if test $REPLACE_LSEEK = 1; then
     AC_LIBOBJ([lseek])
@@ -214,6 +229,7 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gt_TYPE_SSIZE_T
   gl_STDARG_H
+  AM_STDBOOL_H
   gl_STDDEF_H
   gl_STDINT_H
   gl_STDIO_H
@@ -298,7 +314,6 @@ changequote([, ])dnl
   gl_INTTYPES_H
   gl_INTTYPES_INCOMPLETE
   gl_STDALIGN_H
-  AM_STDBOOL_H
   AC_REQUIRE([gt_TYPE_WCHAR_T])
   AC_REQUIRE([gt_TYPE_WINT_T])
   gl_WCHAR_H
@@ -398,15 +413,22 @@ AC_DEFUN([gl_FILE_LIST], [
   build-aux/snippet/arg-nonnull.h
   build-aux/snippet/c++defs.h
   build-aux/snippet/warn-on-use.h
+  lib/basename-lgpl.c
+  lib/dirname-lgpl.c
+  lib/dirname.h
+  lib/dosname.h
   lib/errno.in.h
   lib/error.c
   lib/error.h
   lib/fstat.c
   lib/ftell.c
   lib/ftello.c
+  lib/getprogname.c
+  lib/getprogname.h
   lib/gettext.h
   lib/gettimeofday.c
   lib/intprops.h
+  lib/limits.in.h
   lib/lseek.c
   lib/malloc.c
   lib/msvc-inval.c
@@ -419,6 +441,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/read-file.h
   lib/realloc.c
   lib/stdarg.in.h
+  lib/stdbool.in.h
   lib/stddef.in.h
   lib/stdint.in.h
   lib/stdio-impl.h
@@ -428,6 +451,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strerror-override.h
   lib/strerror.c
   lib/string.in.h
+  lib/stripslash.c
   lib/sys_stat.in.h
   lib/sys_time.in.h
   lib/sys_types.in.h
@@ -439,6 +463,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/version-etc.h
   m4/00gnulib.m4
   m4/absolute-header.m4
+  m4/dirname.m4
+  m4/double-slash-root.m4
   m4/errno_h.m4
   m4/error.m4
   m4/extensions.m4
@@ -450,12 +476,14 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fstat.m4
   m4/ftell.m4
   m4/ftello.m4
+  m4/getprogname.m4
   m4/gettimeofday.m4
   m4/gnulib-common.m4
   m4/include_next.m4
   m4/inttypes-pri.m4
   m4/inttypes.m4
   m4/largefile.m4
+  m4/limits-h.m4
   m4/longlong.m4
   m4/lseek.m4
   m4/malloc.m4
@@ -511,10 +539,12 @@ AC_DEFUN([gl_FILE_LIST], [
   tests/test-ftello4.c
   tests/test-ftello4.sh
   tests/test-fwrite.c
+  tests/test-getprogname.c
   tests/test-gettimeofday.c
   tests/test-init.sh
   tests/test-intprops.c
   tests/test-inttypes.c
+  tests/test-limits-h.c
   tests/test-lseek.c
   tests/test-lseek.sh
   tests/test-read-file.c
@@ -543,7 +573,6 @@ AC_DEFUN([gl_FILE_LIST], [
   tests=lib/fdopen.c
   tests=lib/inttypes.in.h
   tests=lib/stdalign.in.h
-  tests=lib/stdbool.in.h
   tests=lib/version-etc-fsf.c
   tests=lib/wchar.in.h
 ])

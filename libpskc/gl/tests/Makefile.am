@@ -314,6 +314,14 @@ EXTRA_DIST += test-inttypes.c
 
 ## end   gnulib module inttypes-tests
 
+## begin gnulib module limits-h-tests
+
+TESTS += test-limits-h
+check_PROGRAMS += test-limits-h
+EXTRA_DIST += test-limits-h.c
+
+## end   gnulib module limits-h-tests
+
 ## begin gnulib module memchr-tests
 
 TESTS += test-memchr

@@ -62,6 +62,21 @@ HAVE_INCLUDE_NEXT = (__GNUC__ || 60000000 <= __DECC_VER)
 
 ## end   gnulib module absolute-header
 
+## begin gnulib module dirname-lgpl
+
+libgnu_la_SOURCES += dirname-lgpl.c basename-lgpl.c stripslash.c
+
+EXTRA_DIST += dirname.h
+
+## end   gnulib module dirname-lgpl
+
+## begin gnulib module dosname
+
+
+EXTRA_DIST += dosname.h
+
+## end   gnulib module dosname
+
 ## begin gnulib module errno
 
 BUILT_SOURCES += $(ERRNO_H)
@@ -132,6 +147,12 @@ EXTRA_libgnu_la_SOURCES += ftello.c
 
 ## end   gnulib module ftello
 
+## begin gnulib module getprogname
+
+libgnu_la_SOURCES += getprogname.h getprogname.c
+
+## end   gnulib module getprogname
+
 ## begin gnulib module gettext-h
 
 libgnu_la_SOURCES += gettext.h
@@ -153,6 +174,34 @@ EXTRA_libgnu_la_SOURCES += gettimeofday.c
 EXTRA_DIST += intprops.h
 
 ## end   gnulib module intprops
+
+## begin gnulib module limits-h
+
+BUILT_SOURCES += $(LIMITS_H)
+
+# We need the following in order to create <limits.h> when the system
+# doesn't have one that is compatible with GNU.
+if GL_GENERATE_LIMITS_H
+limits.h: limits.in.h $(top_builddir)/config.status
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */' && \
+	  sed -e 's|@''GUARD_PREFIX''@|GL|g' \
+	      -e 's|@''INCLUDE_NEXT''@|$(INCLUDE_NEXT)|g' \
+	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
+	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
+	      -e 's|@''NEXT_LIMITS_H''@|$(NEXT_LIMITS_H)|g' \
+	      < $(srcdir)/limits.in.h; \
+	} > $@-t && \
+	mv $@-t $@
+else
+limits.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += limits.h limits.h-t
+
+EXTRA_DIST += limits.in.h
+
+## end   gnulib module limits-h
 
 ## begin gnulib module lseek
 
@@ -322,6 +371,29 @@ EXTRA_DIST += stdarg.in.h
 
 ## end   gnulib module stdarg
 
+## begin gnulib module stdbool
+
+BUILT_SOURCES += $(STDBOOL_H)
+
+# We need the following in order to create <stdbool.h> when the system
+# doesn't have one that works.
+if GL_GENERATE_STDBOOL_H
+stdbool.h: stdbool.in.h $(top_builddir)/config.status
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */'; \
+	  sed -e 's/@''HAVE__BOOL''@/$(HAVE__BOOL)/g' < $(srcdir)/stdbool.in.h; \
+	} > $@-t && \
+	mv $@-t $@
+else
+stdbool.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += stdbool.h stdbool.h-t
+
+EXTRA_DIST += stdbool.in.h
+
+## end   gnulib module stdbool
+
 ## begin gnulib module stddef
 
 BUILT_SOURCES += $(STDDEF_H)
@@ -369,6 +441,7 @@ stdint.h: stdint.in.h $(top_builddir)/config.status
 	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
 	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
 	      -e 's|@''NEXT_STDINT_H''@|$(NEXT_STDINT_H)|g' \
+	      -e 's/@''HAVE_C99_STDINT_H''@/$(HAVE_C99_STDINT_H)/g' \
 	      -e 's/@''HAVE_SYS_TYPES_H''@/$(HAVE_SYS_TYPES_H)/g' \
 	      -e 's/@''HAVE_INTTYPES_H''@/$(HAVE_INTTYPES_H)/g' \
 	      -e 's/@''HAVE_SYS_INTTYPES_H''@/$(HAVE_SYS_INTTYPES_H)/g' \

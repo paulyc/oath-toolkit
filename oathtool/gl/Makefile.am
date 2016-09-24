@@ -92,6 +92,21 @@ libgnu_la_SOURCES += c-ctype.h c-ctype.c
 
 ## end   gnulib module c-ctype
 
+## begin gnulib module dirname-lgpl
+
+libgnu_la_SOURCES += dirname-lgpl.c basename-lgpl.c stripslash.c
+
+EXTRA_DIST += dirname.h
+
+## end   gnulib module dirname-lgpl
+
+## begin gnulib module dosname
+
+
+EXTRA_DIST += dosname.h
+
+## end   gnulib module dosname
+
 ## begin gnulib module errno
 
 BUILT_SOURCES += $(ERRNO_H)
@@ -143,6 +158,13 @@ EXTRA_DIST += exitfail.h
 
 ## end   gnulib module exitfail
 
+## begin gnulib module flexmember
+
+
+EXTRA_DIST += flexmember.h
+
+## end   gnulib module flexmember
+
 ## begin gnulib module float
 
 BUILT_SOURCES += $(FLOAT_H)
@@ -173,6 +195,12 @@ EXTRA_DIST += float.c float.in.h itold.c
 EXTRA_libgnu_la_SOURCES += float.c itold.c
 
 ## end   gnulib module float
+
+## begin gnulib module getprogname
+
+libgnu_la_SOURCES += getprogname.h getprogname.c
+
+## end   gnulib module getprogname
 
 ## begin gnulib module gettext-h
 
@@ -246,6 +274,43 @@ MOSTLYCLEANFILES += inttypes.h inttypes.h-t
 EXTRA_DIST += inttypes.in.h
 
 ## end   gnulib module inttypes-incomplete
+
+## begin gnulib module limits-h
+
+BUILT_SOURCES += $(LIMITS_H)
+
+# We need the following in order to create <limits.h> when the system
+# doesn't have one that is compatible with GNU.
+if GL_GENERATE_LIMITS_H
+limits.h: limits.in.h $(top_builddir)/config.status
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */' && \
+	  sed -e 's|@''GUARD_PREFIX''@|GL|g' \
+	      -e 's|@''INCLUDE_NEXT''@|$(INCLUDE_NEXT)|g' \
+	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
+	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
+	      -e 's|@''NEXT_LIMITS_H''@|$(NEXT_LIMITS_H)|g' \
+	      < $(srcdir)/limits.in.h; \
+	} > $@-t && \
+	mv $@-t $@
+else
+limits.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += limits.h limits.h-t
+
+EXTRA_DIST += limits.in.h
+
+## end   gnulib module limits-h
+
+## begin gnulib module malloc-posix
+
+
+EXTRA_DIST += malloc.c
+
+EXTRA_libgnu_la_SOURCES += malloc.c
+
+## end   gnulib module malloc-posix
 
 ## begin gnulib module malloca
 
@@ -531,6 +596,7 @@ stdint.h: stdint.in.h $(top_builddir)/config.status
 	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
 	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
 	      -e 's|@''NEXT_STDINT_H''@|$(NEXT_STDINT_H)|g' \
+	      -e 's/@''HAVE_C99_STDINT_H''@/$(HAVE_C99_STDINT_H)/g' \
 	      -e 's/@''HAVE_SYS_TYPES_H''@/$(HAVE_SYS_TYPES_H)/g' \
 	      -e 's/@''HAVE_INTTYPES_H''@/$(HAVE_INTTYPES_H)/g' \
 	      -e 's/@''HAVE_SYS_INTTYPES_H''@/$(HAVE_SYS_INTTYPES_H)/g' \

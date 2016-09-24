@@ -50,6 +50,9 @@ AC_DEFUN([gl_EARLY],
   # Code from module clock-time:
   # Code from module ctype:
   # Code from module ctype-tests:
+  # Code from module dirname-lgpl:
+  # Code from module dosname:
+  # Code from module double-slash-root:
   # Code from module dtotimespec:
   # Code from module environ:
   # Code from module environ-tests:
@@ -72,6 +75,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module fread-tests:
   # Code from module fwrite-tests:
   # Code from module getpagesize:
+  # Code from module getprogname:
+  # Code from module getprogname-tests:
   # Code from module gettext-h:
   # Code from module gettime:
   # Code from module gettimeofday:
@@ -82,6 +87,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module inttypes:
   # Code from module inttypes-incomplete:
   # Code from module inttypes-tests:
+  # Code from module limits-h:
+  # Code from module limits-h-tests:
   # Code from module malloc-posix:
   # Code from module malloca:
   # Code from module malloca-tests:
@@ -184,6 +191,8 @@ AC_DEFUN([gl_INIT],
   gl_source_base='gl'
   gl_FUNC_ALLOCA
   gl_CLOCK_TIME
+  gl_DIRNAME_LGPL
+  gl_DOUBLE_SLASH_ROOT
   gl_ENVIRON
   gl_UNISTD_MODULE_INDICATOR([environ])
   gl_HEADER_ERRNO_H
@@ -204,6 +213,11 @@ AC_DEFUN([gl_INIT],
   if test $REPLACE_ITOLD = 1; then
     AC_LIBOBJ([itold])
   fi
+  gl_FUNC_GETPROGNAME
+  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+  AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
+  AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
+  AC_CHECK_DECLS([__argv], [], [], [#include <stdlib.h>])
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   gl_GETTIME
@@ -215,6 +229,12 @@ AC_DEFUN([gl_INIT],
   gl_SYS_TIME_MODULE_INDICATOR([gettimeofday])
   gl_INTTYPES_H
   gl_INTTYPES_INCOMPLETE
+  gl_LIMITS_H
+  gl_FUNC_MALLOC_POSIX
+  if test $REPLACE_MALLOC = 1; then
+    AC_LIBOBJ([malloc])
+  fi
+  gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MALLOCA
   gl_FUNC_MEMCHR
   if test $HAVE_MEMCHR = 0 || test $REPLACE_MEMCHR = 1; then
@@ -370,11 +390,6 @@ changequote([, ])dnl
     AC_LIBOBJ([getpagesize])
   fi
   gl_UNISTD_MODULE_INDICATOR([getpagesize])
-  gl_FUNC_MALLOC_POSIX
-  if test $REPLACE_MALLOC = 1; then
-    AC_LIBOBJ([malloc])
-  fi
-  gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   dnl Check for prerequisites for memory fence checks.
   gl_FUNC_MMAP_ANON
   AC_CHECK_HEADERS_ONCE([sys/mman.h])
@@ -488,22 +503,31 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/alloca.in.h
   lib/asnprintf.c
   lib/asprintf.c
+  lib/basename-lgpl.c
   lib/c-ctype.c
   lib/c-ctype.h
+  lib/dirname-lgpl.c
+  lib/dirname.h
+  lib/dosname.h
   lib/errno.in.h
   lib/error.c
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/flexmember.h
   lib/float+.h
   lib/float.c
   lib/float.in.h
+  lib/getprogname.c
+  lib/getprogname.h
   lib/gettext.h
   lib/gettime.c
   lib/gettimeofday.c
   lib/intprops.h
   lib/inttypes.in.h
   lib/itold.c
+  lib/limits.in.h
+  lib/malloc.c
   lib/malloca.c
   lib/malloca.h
   lib/malloca.valgrind
@@ -539,6 +563,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strftime.c
   lib/strftime.h
   lib/string.in.h
+  lib/stripslash.c
   lib/sys_time.in.h
   lib/sys_types.in.h
   lib/time-internal.h
@@ -570,6 +595,8 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/bison.m4
   m4/clock_time.m4
   m4/ctype.m4
+  m4/dirname.m4
+  m4/double-slash-root.m4
   m4/eealloc.m4
   m4/environ.m4
   m4/errno_h.m4
@@ -582,6 +609,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/float_h.m4
   m4/fpieee.m4
   m4/getpagesize.m4
+  m4/getprogname.m4
   m4/gettime.m4
   m4/gettimeofday.m4
   m4/gnulib-common.m4
@@ -590,6 +618,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/inttypes-pri.m4
   m4/inttypes.m4
   m4/inttypes_h.m4
+  m4/limits-h.m4
   m4/longlong.m4
   m4/malloc.m4
   m4/malloca.m4
@@ -652,10 +681,12 @@ AC_DEFUN([gl_FILE_LIST], [
   tests/test-fputc.c
   tests/test-fread.c
   tests/test-fwrite.c
+  tests/test-getprogname.c
   tests/test-gettimeofday.c
   tests/test-init.sh
   tests/test-intprops.c
   tests/test-inttypes.c
+  tests/test-limits-h.c
   tests/test-malloca.c
   tests/test-memchr.c
   tests/test-parse-datetime.c
@@ -693,7 +724,6 @@ AC_DEFUN([gl_FILE_LIST], [
   tests=lib/fdopen.c
   tests=lib/fpucw.h
   tests=lib/getpagesize.c
-  tests=lib/malloc.c
   tests=lib/putenv.c
   tests=lib/stdalign.in.h
   tests=lib/timespec-add.c

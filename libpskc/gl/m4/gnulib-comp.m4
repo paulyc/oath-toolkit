@@ -73,6 +73,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module inttypes-tests:
   # Code from module lib-symbol-versions:
   # Code from module lib-symbol-visibility:
+  # Code from module limits-h:
+  # Code from module limits-h-tests:
   # Code from module manywarnings:
   # Code from module memchr:
   # Code from module memchr-tests:
@@ -136,6 +138,7 @@ AC_DEFUN([gl_INIT],
   gl_INTTOSTR
   gl_LD_VERSION_SCRIPT
   gl_VISIBILITY
+  gl_LIMITS_H
   gl_FUNC_MEMCHR
   if test $HAVE_MEMCHR = 0 || test $REPLACE_MEMCHR = 1; then
     AC_LIBOBJ([memchr])
@@ -349,6 +352,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/intprops.h
   lib/inttostr.c
   lib/inttostr.h
+  lib/limits.in.h
   lib/memchr.c
   lib/memchr.valgrind
   lib/minmax.h
@@ -382,6 +386,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/inttypes.m4
   m4/inttypes_h.m4
   m4/ld-version-script.m4
+  m4/limits-h.m4
   m4/longlong.m4
   m4/manywarnings.m4
   m4/math_h.m4
@@ -431,6 +436,7 @@ AC_DEFUN([gl_FILE_LIST], [
   tests/test-intprops.c
   tests/test-inttostr.c
   tests/test-inttypes.c
+  tests/test-limits-h.c
   tests/test-memchr.c
   tests/test-snprintf.c
   tests/test-stdalign.c

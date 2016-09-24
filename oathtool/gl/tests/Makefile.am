@@ -207,6 +207,16 @@ EXTRA_libtests_a_SOURCES += getpagesize.c
 
 ## end   gnulib module getpagesize
 
+## begin gnulib module getprogname-tests
+
+DEFS += -DEXEEXT=\"@EXEEXT@\"
+TESTS += test-getprogname
+check_PROGRAMS += test-getprogname
+test_getprogname_LDADD = $(LDADD)
+EXTRA_DIST += test-getprogname.c
+
+## end   gnulib module getprogname-tests
+
 ## begin gnulib module gettimeofday-tests
 
 TESTS += test-gettimeofday
@@ -232,14 +242,13 @@ EXTRA_DIST += test-inttypes.c
 
 ## end   gnulib module inttypes-tests
 
-## begin gnulib module malloc-posix
+## begin gnulib module limits-h-tests
 
+TESTS += test-limits-h
+check_PROGRAMS += test-limits-h
+EXTRA_DIST += test-limits-h.c
 
-EXTRA_DIST += malloc.c
-
-EXTRA_libtests_a_SOURCES += malloc.c
-
-## end   gnulib module malloc-posix
+## end   gnulib module limits-h-tests
 
 ## begin gnulib module malloca-tests
 

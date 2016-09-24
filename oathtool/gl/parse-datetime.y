@@ -1704,6 +1704,7 @@ parse_datetime2 (struct timespec *result, char const *p,
   bool ok = true;
   char dbg_ord[DBGBUFSIZE];
   char dbg_tm[DBGBUFSIZE];
+  char const *input_sentinel = p + strlen (p);
 
   if (! now)
     {
@@ -1862,7 +1863,15 @@ parse_datetime2 (struct timespec *result, char const *p,
   if (yyparse (&pc) != 0)
     {
       if (pc.parse_datetime_debug)
-        dbg_printf (_("error: parsing failed, stopped at '%s'\n"), pc.input);
+        {
+          if (input_sentinel <= pc.input)
+            dbg_printf (_("error: parsing failed\n"), pc.input);
+          else
+            {
+              dbg_printf (_("error: parsing failed, stopped at '%s'\n"),
+                          pc.input);
+            }
+         }
       goto fail;
     }
 
@@ -2004,8 +2013,7 @@ parse_datetime2 (struct timespec *result, char const *p,
               long int abs_time_zone = time_zone < 0 ? - time_zone : time_zone;
               long int abs_time_zone_hour = abs_time_zone / 60;
               int abs_time_zone_min = abs_time_zone % 60;
-              char tz1buf[sizeof "XXX+0:00"
-                          + sizeof pc.time_zone * CHAR_BIT / 3];
+              char tz1buf[sizeof "XXX+0:00" + TYPE_WIDTH (pc.time_zone) / 3];
               if (!tz_was_altered)
                 tz0 = get_tz (tz0buf);
               sprintf (tz1buf, "XXX%s%ld:%02d", &"-"[time_zone < 0],
@@ -2242,7 +2250,7 @@ parse_datetime2 (struct timespec *result, char const *p,
           /* Special case: using 'date -u' simply set TZ=UTC0 */
           if (STREQ(tz_env,"UTC0"))
             {
-              tz_src = _("TZ=UTC0 envionment value or -u");
+              tz_src = _("TZ=UTC0 environment value or -u");
             }
           else
             {
